@@ -1,0 +1,57 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TOASTMASTERS CLUB</title>
+    <link rel="stylesheet" href="resource/app.css">
+    <link rel="stylesheet" href="resource/weui.min.css">
+    <link rel="stylesheet" href="resource/jquery-weui.min.css">
+
+</head>
+<body>
+  <div class="weui-pull-to-refresh__layer">
+    <div class='weui-pull-to-refresh__arrow'></div>
+    <div class='weui-pull-to-refresh__preloader'></div>
+    <div class="down">下拉刷新</div>
+    <div class="up">释放刷新</div>
+    <div class="refresh">正在刷新</div>
+  </div>
+
+    <div class="weui-panel weui-panel_access">
+      <div class="weui-panel__hd">ActNow Club Evalutions</div>
+      <div class="weui-panel__bd">
+            
+          <div class="weui-panel">
+            <div class="weui-panel__bd">
+              <div class="weui-media-box weui-media-box_text">
+                  <h4 class="weui-media-box__title">To: XXX</h4>
+                  <p class="weui-media-box__desc">stage performance is good.</p>
+                  <ul class="weui-media-box__info">
+                    <li class="weui-media-box__info__meta">evalutor's Name</li>
+                    <li class="weui-media-box__info__meta">Time</li>
+                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">2016/6/22</li>
+                  </ul>
+                </div>
+            </div>
+          </div>
+
+      </div>
+    </div>
+
+
+    <script src="resource/jquery.min.js"></script>
+    <script src="resource/jquery-weui.min.js"></script>
+    <script src="resource/swiper.min.js"></script>
+    <script src="resource/city-picker.min.js"></script>
+    <script type="text/javascript">
+        $(document.body).pullToRefresh()
+        $(document.body).on("pull-to-refresh", function() {
+          //do something
+          //alert(123);
+          console.log("refresh data...");
+          $(document.body).pullToRefreshDone();
+          return;
+        });
+    </script>
+    
+</body>
+</html>

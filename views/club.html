@@ -1,0 +1,82 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TOASTMASTERS CLUB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" /> 
+    <link rel="stylesheet" href="resource/app.css">
+    <link rel="stylesheet" href="resource/weui.min.css">
+    <link rel="stylesheet" href="resource/jquery-weui.min.css">
+    <script src="resource/angular.min.js"></script>
+
+    <script type="text/javascript">
+
+var app = angular.module('myApp', []);
+
+app.config(['$locationProvider', function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    }]);
+
+app.controller('myCtrl', function($scope,$http,$location) {
+    $scope.club = {
+        clubName:"",
+        clubId:0
+    };
+    var parameters = $location.search();
+    if(parameters.clubId){
+        $http({
+          method: 'GET',
+          url: '/clubs/'+parameters.clubId
+        }).then(function successCallback(response) {
+              var club  = response.data.club;
+              $scope.club.clubName = club.club_name;
+              $scope.club.clubPic = club.club_pic;
+              $scope.club.clubIntro = club.club_intro;
+          }, function errorCallback(response) {
+              console.log(response.data.error);
+        }); 
+    }else{
+       console.error("404 page not found");
+    }
+
+    
+
+});
+
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+
+    <div class="weui-panel weui-panel_access">
+      <div class="weui-panel__hd">{{club.clubName}} Toastmasters Club</div>
+      <div class="weui-panel__bd"> 
+            <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000">
+              <div class="swiper-wrapper" style="height:auto">
+                <div class="swiper-slide" style="height:auto"><img src="img/actnow.JPG" alt=""></div>
+              </div>
+            </div>
+            <article class="weui-article">
+                <section>
+                    ActNow是一家面向社会的Toastmasters俱乐部，成立于2014年3月，我们致力于帮助会员提升沟通与领导力从而获得自信与成长，并且建立深厚的友谊。会议时间：每周4 晚7-9点。会议地点：天府软件园 A4诺基亚Athens会议室
+                    <p>Toastmasters International is a world leader in communication and leadership development. Our membership is 313,000 strong. These members improve their speaking and leadership skills by attending one of the 14,650 clubs in 126 countries that make up our global network of meeting locations.</>
+                </section>
+            </article>
+      </div>
+      <div class="weui-panel__ft">
+            <div class="weui-footer">
+              <p class="weui-footer__text">Supported by 大城小爱工作室</p>
+              <p class="weui-footer__text">Copyright © 2017-2018 dcxagzs@163.com</p>
+            </div>  
+      </div>  
+    </div>
+      
+    <script src="resource/jquery.min.js"></script>
+    <script src="resource/jquery-weui.min.js"></script>
+    <script src="resource/swiper.min.js"></script>
+    <script src="resource/city-picker.min.js"></script>
+
+    <script type="text/javascript">
+        $(".swiper-container").swiper();
+    </script>
+</body>
+</html>

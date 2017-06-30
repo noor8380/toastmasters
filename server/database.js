@@ -8,6 +8,7 @@ function DBFactory(){
           password : 'mysql',       
           port: '3306',                   
           database: 'toastmasters', 
+          charset:'UTF8_GENERAL_CI',
       });
       connection.connect();
       return connection;

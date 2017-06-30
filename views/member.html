@@ -2,20 +2,82 @@
 <head>
     <meta charset="UTF-8">
     <title>TOASTMASTERS CLUB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" /> 
     <link rel="stylesheet" href="resource/app.css">
     <link rel="stylesheet" href="resource/weui.min.css">
     <link rel="stylesheet" href="resource/jquery-weui.min.css">
+    <script src="resource/angular.min.js"></script>
 
+    <script type="text/javascript">
+
+var app = angular.module('myApp', []);
+
+app.config(['$locationProvider', function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    }]);
+
+app.controller('myCtrl', function($scope,$http,$location) {
+    $scope.club = {
+        clubName:"",
+        clubId:0
+    };
+    var parameters = $location.search();
+    if(parameters.clubId && parameters.memberId){
+        $http({
+          method: 'GET',
+          url: '/clubs/'+parameters.clubId
+        }).then(function successCallback(response) {
+              var club  = response.data.club;
+              if (club){
+                $scope.club = club;
+                $.toptip('Welcome to '+$scope.club.clubName+' Toastmasters club', 'success');
+
+                $http({
+                      method: 'GET',
+                      url: '/clubs/'+parameters.clubId+'/members/'+parameters.memberId
+                }).then(function successCallback(response) {
+                      var memobj = response.data.result;
+                      if (memobj){
+                        $scope.member = memobj.member;
+                        $scope.CCStatus = memobj.CCStatus;
+                        $scope.CLStatus = memobj.CLStatus;
+                      }else{
+                          $.toptip('NO members found', 'error');
+                      }
+
+
+                 }, function errorCallback(response) {
+                      $.toptip(response.data.error, 'error');
+                 }); 
+
+              }else{
+                 $.toptip('NO members FOUND', 'error');
+              }
+
+          }, function errorCallback(response) {
+              $.toptip(response.data.error, 'error');
+        }); 
+
+        
+    }else{
+        $.toptip('wrong criterias for search', 'error');
+        // redirect to member list
+    }
+
+});
+
+    </script>
 </head>
-<body>
+<body ng-app="myApp" ng-controller="myCtrl">
     <div class="weui-panel weui-panel_access">
-      <div class="weui-panel__hd">ActNow Club</div>
+      <div class="weui-panel__hd">{{club.club_name}} Club Members</div>
       <div class="weui-panel__bd">
           <div class="weui-flex">
             <div class="weui-flex__item" style="padding:20px; display:block; text-align: center;">
                 <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000" >
                     <div class="swiper-wrapper" style="height:auto">
-                      <div class="swiper-slide" style="height:auto"><img style="width:50%" src="img/test.JPG" alt=""></div>
+                      <div class="swiper-slide" style="height:auto"><img style="width:50%" ng-src="{{member.member_pic}}" alt=""></div>
                     </div>
                 </div>
             </div>
@@ -23,61 +85,34 @@
           <div class="weui-form-preview">
             <div class="weui-form-preview__hd">
               <label class="weui-form-preview__label">Name</label>
-              <em class="weui-form-preview__value">Manager</em>
+              <em class="weui-form-preview__value">{{member.member_name}}</em>
             </div>
-            <div class="weui-form-preview__bd">
-              <div class="weui-form-preview__item">
-                <label class="weui-form-preview__label">Work</label>
-                <span class="weui-form-preview__value">software engineer</span>
-              </div>
-              <div class="weui-form-preview__item">
-                <label class="weui-form-preview__label">Contact</label>
-                <span class="weui-form-preview__value">***@***.com</span>
-              </div>
+             <div class="weui-form-preview__item">
+                <span class="weui-form-preview__label" style="padding:20px;">{{member.member_intro}}</span>
             </div>
           </div>
           <div class="weui-form-preview">
-            <div class="weui-form-preview__hd">
-              <label class="weui-form-preview__label">CC Status</label>
-              <em class="weui-form-preview__value">CC6 Vocal Variety</em>
+            <div class="weui-panel__hd">
+                <em class="weui-form-preview__value">CC Status</em>
             </div>
             <div class="weui-form-preview__bd">
-              <div class="weui-form-preview__item">
-                <label class="weui-form-preview__label"><i class="weui-icon-success"></i> CC1</label>
+              <div class="weui-form-preview__item" ng-repeat="css in CCStatus | orderBy:'cc_id' ">
+                <label class="weui-form-preview__label">{{css.cc_type}}{{css.cc_level}}: {{css.cc_name}}</label>
                 <span class="weui-form-preview__value">
-                    Evalution report
-                </span>
-              </div>
-              <div class="weui-form-preview__item">
-                <label class="weui-form-preview__label"><i class="weui-icon-success"></i> CC2</label>
-                <span class="weui-form-preview__value">
-                    Evalution report
+                    <i ng-class="{'weui-icon-waiting': (css.ccr_status == null || css.ccr_status == 0),'weui-icon-success':(css.ccr_status == 1) }"></i>
                 </span>
               </div>
             </div>
           </div>
           <div class="weui-form-preview">
-            <div class="weui-form-preview__hd">
-              <label class="weui-form-preview__label">CL Status</label>
-              <em class="weui-form-preview__value">CL1 listening</em>
+            <div class="weui-panel__hd">
+                <em class="weui-form-preview__value">CL Status</em>
             </div>
             <div class="weui-form-preview__bd">
-              <div class="weui-form-preview__item">
+              <div class="weui-form-preview__item"  ng-repeat="cls in CLStatus | orderBy:'cl_id' >
                 <label class="weui-form-preview__label">TM</label>
                 <span class="weui-form-preview__value">
                     <i class="weui-icon-success"></i>
-                </span>
-              </div>
-              <div class="weui-form-preview__item">
-                <label class="weui-form-preview__label">TIMER</label>
-                <span class="weui-form-preview__value">
-                    <i class="weui-icon-success"></i>
-                </span>
-              </div>
-              <div class="weui-form-preview__item">
-                <label class="weui-form-preview__label">TIMER</label>
-                <span class="weui-form-preview__value">
-                    <i class="weui-icon-warn"></i> 
                 </span>
               </div>
             </div>
@@ -89,12 +124,8 @@
       </div>
     </div>
 
-
     <script src="resource/jquery.min.js"></script>
     <script src="resource/jquery-weui.min.js"></script>
-    <script src="resource/swiper.min.js"></script>
-    <script src="resource/city-picker.min.js"></script>
-
     
 </body>
 </html>

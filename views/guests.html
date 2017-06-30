@@ -2,39 +2,101 @@
 <head>
     <meta charset="UTF-8">
     <title>TOASTMASTERS CLUB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" /> 
     <link rel="stylesheet" href="resource/app.css">
     <link rel="stylesheet" href="resource/weui.min.css">
     <link rel="stylesheet" href="resource/jquery-weui.min.css">
+    <script src="resource/angular.min.js"></script>
 
+    <script type="text/javascript">
+
+var app = angular.module('myApp', []);
+
+app.config(['$locationProvider', function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    }]);
+
+app.controller('myCtrl', function($scope,$http,$location) {
+    $scope.club = {
+        clubName:"",
+        clubId:0
+    };
+    var parameters = $location.search();
+    if(parameters.clubId){
+        $http({
+          method: 'GET',
+          url: '/clubs/'+parameters.clubId
+        }).then(function successCallback(response) {
+              var club  = response.data.club;
+              if (club){
+                $scope.club = club;
+                $.toptip('Welcome to '+$scope.club.clubName+' Toastmasters club', 'success');
+                $(".swiper-container").swiper();
+
+                $http({
+                      method: 'GET',
+                      url: '/clubs/'+parameters.clubId+"/guests"
+                }).then(function successCallback(response) {
+                      $scope.guests  = response.data.guests;
+                      if ($scope.guests){
+                      }else{
+                          $.toptip('NO guests found', 'error');
+                      }
+                 }, function errorCallback(response) {
+                      $.toptip(response.data.error, 'error');
+                 }); 
+
+              }else{
+                $.toptip('NO guests FOUND', 'error');
+              }
+          }, function errorCallback(response) {
+              $.toptip(response.data.error, 'error');
+        }); 
+
+        
+    }else{
+        $.toptip('NO club found', 'error');
+        // redirect to toastmaster club list laster
+    }
+
+    $scope.clearFilter = function(){
+        console.log("clear the filter...");
+        $scope.guestName = undefined;
+    }
+
+});
+
+    </script>
 </head>
-<body>
+<body ng-app="myApp" ng-controller="myCtrl">
     <div class="weui-panel weui-panel_access">
-      <div class="weui-panel__hd">ActNow Club Honored Guests</div>
+      <div class="weui-panel__hd">{{club.club_name}} Club Honored Guests</div>
       <div class="weui-panel__bd">
           
           <div class="weui-search-bar" id="searchBar">
             <form class="weui-search-bar__form">
               <div class="weui-search-bar__box" style="height: inherit">
                 <i class="weui-icon-search"></i>
-                <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="">
-                <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+                <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="" ng-model="guestName">
+                <a href="javascript:" ng-click="clearFilter()" class="weui-icon-clear" id="searchClear"></a>
               </div>
               <label class="weui-search-bar__label" id="searchText">
                 <i class="weui-icon-search"></i>
                 <span>搜索</span>
               </label>
             </form>
-            <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+            <a ng-href="javascript:" ng-click="clearFilter()"  class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
           </div>
           
-          <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+          <a href="javascript:void(0);" ng-repeat="guest in guests | filter: {'guest_name': guestName }" class="weui-media-box weui-media-box_appmsg">
             <div class="weui-cell">
                   <div class="weui-cell__hd" style="position: relative;margin-right: 10px;">
-                      <img src="img/g.jpg" style="width: 50px;display: block">
+                      <img ng-src="{{guest.guest_pic}}" style="width: 50px;display: block">
                   </div>
                   <div class="weui-cell__bd">
-                      <p>Guest 1</p>
-                      <p style="font-size: 13px;color: #888888;">self introduction</p>
+                      <p>{{guest.guest_name}}</p>
+                      <p style="font-size: 13px;color: #888888;">{{guest.guest_intro}}</p>
                   </div>
               </div>
           </a>
@@ -42,12 +104,9 @@
       </div>
     </div>
 
-
     <script src="resource/jquery.min.js"></script>
     <script src="resource/jquery-weui.min.js"></script>
     <script src="resource/swiper.min.js"></script>
-    <script src="resource/city-picker.min.js"></script>
 
-    
 </body>
 </html>

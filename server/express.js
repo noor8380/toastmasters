@@ -4,11 +4,6 @@ app.use(express.static('views'));
 
 var JsonResult = require('./jsonresult')
 var ClubService = require('./ClubService');
- 
-//  主页输出 "Hello World"
-app.get('/', function (req, res) {
-   res.send('welcome to toastmaster club center');
-})
 
 app.get('/clubs/:clubId', function (req, res) {
    var clubService = new ClubService();

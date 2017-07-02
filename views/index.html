@@ -1,0 +1,81 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TOASTMASTERS CLUB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" /> 
+    <link rel="stylesheet" href="resource/app.css">
+    <link rel="stylesheet" href="resource/weui.min.css">
+    <link rel="stylesheet" href="resource/jquery-weui.min.css">
+    <script src="resource/angular.min.js"></script>
+
+    <script type="text/javascript">
+
+var app = angular.module('myApp', []);
+
+app.config(['$locationProvider', function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    }]);
+
+app.config(['$httpProvider', function($httpProvider) {
+        $httpProvider.defaults.useXDomain = true;
+        delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    }
+]);
+
+app.controller('myCtrl', function($scope,$http,$location) {
+    var url = "/accessToken";
+    $http({
+          method: 'GET',
+          url: "/accessToken"
+        }).then(function successCallback(response) {
+             var tokenString = response.data.token;
+             var token = JSON.parse(tokenString);
+             $scope.access_token = token.access_token;
+
+              $http({
+                method: 'GET',
+                url: "/news/"+$scope.access_token
+              }).then(function successCallback(response) {
+                  console.log(response);
+              },function errorCallback(response){
+                    console.log(response);
+              });   
+
+        },function errorCallback(response){
+              console.log(response);
+        });   
+});
+
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+
+    <div class="weui-panel weui-panel_access">
+      <div class="weui-panel__hd">Toastmasters Clubs</div>
+      <div class="weui-panel__bd"> 
+            <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000">
+              <div class="swiper-wrapper" style="height:auto">
+                <div class="swiper-slide" style="height:auto"><img ng-src="{{club.clubPic}}" alt=""></div>
+              </div>
+            </div>
+            <article class="weui-article">
+                <section>
+                </section>
+            </article>
+      </div>
+      <div class="weui-panel__ft">
+            <div class="weui-footer">
+              <p class="weui-footer__text">Supported by 大城小爱工作室</p>
+              <p class="weui-footer__text">Copyright © 2017-2018 dcxagzs@163.com</p>
+            </div>  
+      </div>  
+    </div>
+      
+    <script src="resource/jquery.min.js"></script>
+    <script src="resource/jquery-weui.min.js"></script>
+    <script src="resource/swiper.min.js"></script>
+    <script src="resource/city-picker.min.js"></script>
+
+</body>
+</html>

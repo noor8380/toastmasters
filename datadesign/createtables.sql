@@ -8,6 +8,7 @@ create table CLUB (
 	club_name varchar(255) not null,
 	club_pic varchar(255),
 	club_officer_pic varchar(255),
+	club_meeting_link varchar(255),
 	club_intro text
 );
 
@@ -79,8 +80,10 @@ create table CLRECORDS (
 );
 
 
-insert into ClUB (club_name,club_pic,club_officer_pic,club_intro) values ("ActNow","https://www.baidu.com/img/bd_logo1.png","https://www.baidu.com/img/bd_logo1.png","ActNow是一家面向社会的Toastmasters俱乐部，成立于2014年3月，我们致力于帮助会员提升沟通与领导力从而获得自信与成长，并且建立深厚的友谊。会议时间：每周4 晚7-9点。会议地点：天府软件园 A4诺基亚Athens会议室。
+insert into ClUB (club_name,club_pic,club_officer_pic,club_meeting_link,club_intro) values ("ActNow","https://www.baidu.com/img/bd_logo1.png","https://www.baidu.com/img/bd_logo1.png","https://www.baidu.com/img/bd_logo1.png","ActNow是一家面向社会的Toastmasters俱乐部，成立于2014年3月，我们致力于帮助会员提升沟通与领导力从而获得自信与成长，并且建立深厚的友谊。会议时间：每周4 晚7-9点。会议地点：天府软件园 A4诺基亚Athens会议室。
                     Toastmasters International is a world leader in communication and leadership development. Our membership is 313,000 strong. These members improve their speaking and leadership skills by attending one of the 14,650 clubs in 126 countries that make up our global network of meeting locations.");
+
+
 insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("Manager", "self intro here...", "PRISIDENT", "https://www.baidu.com/img/bd_logo1.png", "responsibilities of prisident of actnow",1);
 insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("Rosie", "self intro here...", "VPE", "https://www.baidu.com/img/bd_logo1.png", "responsibilities of prisident of actnow",1);
 insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("CiCi", "self intro here...", "VPM", "https://www.baidu.com/img/bd_logo1.png", "responsibilities of prisident of actnow",1);

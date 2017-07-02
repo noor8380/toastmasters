@@ -17,11 +17,8 @@ app.config(['$locationProvider', function($locationProvider) {
         $locationProvider.html5Mode(true);
     }]);
 
-app.controller('myCtrl', function($scope,$http,$location) {
-    $scope.club = {
-        clubName:"",
-        clubId:0
-    };
+app.controller('myCtrl', function($scope,$http,$location,$window) {
+    $scope.club = {};
     var parameters = $location.search();
     if(parameters.clubId && parameters.memberId){
         $http({
@@ -31,7 +28,7 @@ app.controller('myCtrl', function($scope,$http,$location) {
               var club  = response.data.club;
               if (club){
                 $scope.club = club;
-                $.toptip('Welcome to '+$scope.club.clubName+' Toastmasters club', 'success');
+                $.toptip('Welcome to '+$scope.club.club_name+' Toastmasters club', 'success');
 
                 $http({
                       method: 'GET',
@@ -62,7 +59,38 @@ app.controller('myCtrl', function($scope,$http,$location) {
         
     }else{
         $.toptip('wrong criterias for search', 'error');
+
         // redirect to member list
+    }
+
+
+    $scope.applyCC = function(ccStatus){
+          $http({
+                method: 'GET',
+                url: "/clubs/"+$scope.member.club_id+"/members/"+$scope.member.member_id+"/applycc/"+ccStatus.cc_id
+          }).then(function successCallback(response) {
+                $.toptip("Apply Succeed. waiting for approval", 'success');
+                ccStatus.ccr_status = 0;
+           }, function errorCallback(response) {
+                $.toptip("Apply failed, please try again later.", 'error');
+           }); 
+    };
+
+    $scope.applyCL = function(clStatus){
+          $http({
+                method: 'GET',
+                url: "/clubs/"+$scope.member.club_id+"/members/"+$scope.member.member_id+"/applycl/"+clStatus.cl_id
+          }).then(function successCallback(response) {
+                $.toptip("Apply Succeed. waiting for approval", 'success');
+                clStatus.clr_status = 0;
+           }, function errorCallback(response) {
+                $.toptip("Apply failed, please try again later.", 'error');
+           }); 
+    };
+
+    $scope.backToMembers = function(){
+        $location.url("members.html?clubId="+$scope.club.club_id);
+        $window.location.reload();
     }
 
 });
@@ -96,10 +124,16 @@ app.controller('myCtrl', function($scope,$http,$location) {
                 <em class="weui-form-preview__value">CC Status</em>
             </div>
             <div class="weui-form-preview__bd">
-              <div class="weui-form-preview__item" ng-repeat="css in CCStatus | orderBy:'cc_id' ">
+              <div class="weui-form-preview__item" ng-repeat="css in CCStatus | orderBy:'cc_id' " style="padding:1px;">
                 <label class="weui-form-preview__label">{{css.cc_type}}{{css.cc_level}}: {{css.cc_name}}</label>
                 <span class="weui-form-preview__value">
-                    <i ng-class="{'weui-icon-waiting': (css.ccr_status == null || css.ccr_status == 0),'weui-icon-success':(css.ccr_status == 1) }"></i>
+                    <i ng-if="css.ccr_status != null"  ng-class="{'weui-icon-waiting': (css.ccr_status == 0),'weui-icon-success':(css.ccr_status == 1) }"></i>
+                    <div class="button_sp_area">
+                    <a ng-if="css.ccr_status == null" 
+                      href="javascript:void(0);" 
+                      ng-click="applyCC(css)" 
+                      class="weui-btn weui-btn_mini weui-btn_primary">apply</a>
+                    </div>
                 </span>
               </div>
             </div>
@@ -109,17 +143,22 @@ app.controller('myCtrl', function($scope,$http,$location) {
                 <em class="weui-form-preview__value">CL Status</em>
             </div>
             <div class="weui-form-preview__bd">
-              <div class="weui-form-preview__item"  ng-repeat="cls in CLStatus | orderBy:'cl_id' >
-                <label class="weui-form-preview__label">TM</label>
+              <div class="weui-form-preview__item"  ng-repeat="cls in CLStatus | orderBy:'cl_id'" style="padding:1px;">
+                <label class="weui-form-preview__label">{{cls.cl_type}}{{cls.cl_level}}:{{cls.cl_name}}[{{cls.cc_role}}]</label>
                 <span class="weui-form-preview__value">
-                    <i class="weui-icon-success"></i>
+                    <i ng-if="cls.clr_status != null" ng-class="{'weui-icon-waiting': (cls.clr_status == 0),'weui-icon-success':(cls.clr_status == 1) }"></i>
+                    <a ng-if="cls.clr_status == null" 
+                      href="javascript:void(0);" 
+                      ng-click="applyCL(cls)"
+                      class="weui-btn weui-btn_mini weui-btn_primary">apply</a>
                 </span>
               </div>
             </div>
             <div class="weui-form-preview__ft">
-                <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">back to member list</button>
-                <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">attend meeting to achieve goals</button>
-            </div>
+                <a ng-if="club.club_id" class="weui-form-preview__btn weui-form-preview__btn_default" href='javascript:void(0);' ng-click="backToMembers()">Members</a>
+                <a ng-if="club.club_meeting_link" 
+                type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" ng-href="{{club.club_meeting_link}}">Attend meetings</a>
+             </div>
           </div>
       </div>
     </div>

@@ -71,7 +71,6 @@ function ClubService(){
 		   });
 	}
 
-
 	this.getMember = function(clubId, memberId,successCallback,failCallback){    
 			var dbFactory = new DBFactory();
 			var conn = dbFactory.createConnection();
@@ -116,6 +115,40 @@ function ClubService(){
 			            }
 	            	});	
 	            }
+		   });
+	}
+
+	this.applyCC = function(clubId, memberId, ccId, successCallback, failCallback){
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+		 	var  sql = "insert into CCRECORDS(cc_id,member_id) values("+ccId+" , "+memberId+")";
+		  	conn.query(sql,function (err, result) {
+		            if(err){
+		              failCallback(err);
+		              console.log('[SELECT ERROR] - ',err.message);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
+		   });
+	}
+
+	this.applyCL = function(clubId, memberId, cLId, successCallback, failCallback){
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+		 	var  sql = "insert into CLRECORDS(cl_id,member_id) values("+cLId+" , "+memberId+")";
+		  	conn.query(sql,function (err, result) {
+		            if(err){
+		              failCallback(err);
+		              console.log('[SELECT ERROR] - ',err.message);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
 		   });
 	}
 

@@ -49,7 +49,6 @@ app.get('/clubs/:clubId/members', function (req, res) {
 })
 
 app.get('/clubs/:clubId/members/:memberId', function (req, res) {
-   console.log(req.params);
    var clubService = new ClubService();
    clubService.getMember(req.params.clubId, req.params.memberId, function(results){
        res.json({result: results});
@@ -57,6 +56,28 @@ app.get('/clubs/:clubId/members/:memberId', function (req, res) {
        res.json({error: errMsg});
    });
 })
+
+app.get('/clubs/:clubId/members/:memberId/applycc/:ccId', function (req, res) {
+   console.log(req.params);
+   var clubService = new ClubService();
+   clubService.applyCC(req.params.clubId, req.params.memberId, req.params.ccId, function(results){
+       res.json({result:true});
+   },function(errMsg){
+       res.json({error:false});
+   });
+})
+
+app.get('/clubs/:clubId/members/:memberId/applycl/:clId', function (req, res) {
+   console.log(req.params);
+   var clubService = new ClubService();
+   clubService.applyCL(req.params.clubId, req.params.memberId, req.params.clId, function(results){
+       res.json({result:true});
+   },function(errMsg){
+       res.json({error:false});
+   });
+})
+
+
 
 var server = app.listen(8081, function () {
  

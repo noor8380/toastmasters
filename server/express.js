@@ -1,4 +1,6 @@
 var express = require('express');
+var http = require('http');
+
 var app = express();
 app.use(express.static('views'));
 
@@ -72,12 +74,6 @@ app.get('/clubs/:clubId/members/:memberId/applycl/:clId', function (req, res) {
    });
 })
 
-
-
-var server = app.listen(8081, function () {
- 
-  var host = server.address().address
-  var port = server.address().port
- 
-  console.log("应用实例，访问地址为 http://%s:%s", host, port)
-})
+http.createServer(app).listen(8081, function(){
+  console.log("Express server listening on port 8081");
+});

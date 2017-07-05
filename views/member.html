@@ -155,7 +155,7 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
               </div>
             </div>
             <div class="weui-form-preview__ft">
-                <a ng-if="club.club_id" class="weui-form-preview__btn weui-form-preview__btn_default" href='javascript:void(0);' ng-click="backToMembers()">Members</a>
+                <a ng-if="club.club_id" class="weui-form-preview__btn weui-form-preview__btn_primary" href='javascript:void(0);' ng-click="backToMembers()">Members</a>
                 <a ng-if="club.club_meeting_link" 
                 type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" ng-href="{{club.club_meeting_link}}">Attend meetings</a>
              </div>

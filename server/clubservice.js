@@ -1,6 +1,6 @@
 var DBFactory = require('./database'); 
 
-function ClubService(){
+function clubservice(){
 	
 	this.getClubInfo = function(clubId,successCallback,failCallback){    
 			var dbFactory = new DBFactory();
@@ -226,6 +226,6 @@ function ClubService(){
 
 }
 
-module.exports = ClubService;
+module.exports = clubservice;
 
 

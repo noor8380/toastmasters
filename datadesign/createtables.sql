@@ -12,7 +12,6 @@ create table CLUB (
 	club_intro_link text
 );
 
-
 create table OFFICERS (
 	officer_id int primary key AUTO_INCREMENT,
 	officer_name varchar(50) not null,
@@ -97,26 +96,27 @@ create table EVALUATIONS (
 	FOREIGN KEY (meeting_id) REFERENCES MEETING(meeting_id)
 );
 
-select * from EVALUATIONS where EVALUATIONS.meeting_id in (select meeting_id from MEETING where MEETING.club_id = 1 )
-select * from EVALUATIONS where EVALUATIONS.meeting_id = (select max(meeting_id) from MEETING where MEETING.club_id = 1)
+insert into CLUB (club_name,club_pic,club_officer_pic,club_meeting_link,club_intro_link) values ("ActNow",
+	"http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/794062813.jpg",
+	"http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/591708458.jpg",
+	"http://toastmaster.sinaapp.com/toastmaster/index.php/event/list_event/club_id/1.html",
+	"https://www.baidu.com/img/bd_logo1.png");
+
+insert into MEETING(meeting_name,club_id) values("ActNow #118 English Meeting",1);
+insert into EVALUATIONS(evaluator,speaker,content,complete_time,meeting_id) values("tester","Manager","excellent",now(),1);
+
+insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("Manager", "self intro here...", "President", "http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/toaster.jpg", "roles introduction here...",1);
+insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("Rosie", "self intro here...", "VPE", "http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/toaster.jpg", "roles introduction here...",1);
+insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("CiCi", "self intro here...", "VPM", "http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/toaster.jpg", "roles introduction here...",1);
+insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("Ian", "self intro here...", "VPPR", "http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/toaster.jpg", "roles introduction here...",1);
+insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("Xiaphy", "self intro here...", "Treasure", "http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/toaster.jpg", "roles introduction here...",1);
+insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("Sophie", "self intro here...", "Secretary", "http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/toaster.jpg", "roles introduction here...",1);
+insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("James", "self intro here...", "SAA", "http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/toaster.jpg", "roles introduction here...",1);
 
 
-insert into ClUB (club_name,club_pic,club_officer_pic,club_meeting_link,club_intro_link) values ("ActNow","https://www.baidu.com/img/bd_logo1.png","https://www.baidu.com/img/bd_logo1.png","https://www.baidu.com/img/bd_logo1.png","https://www.baidu.com/img/bd_logo1.png");
+insert into GUESTS (guest_name, guest_pic, guest_intro, guest_link,  club_id) values ("guest1", "http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/toaster.jpg", "name introduction", " ", 1);
 
-insert into MEETING(meeting_name,club_id) values("#117会议",1);
-insert into EVALUATIONS(evaluator,speaker,content,complete_time,meeting_id) values("Manager","somebody","excellent",now(),1);
-insert into EVALUATIONS(evaluator,speaker,content,complete_time,meeting_id) values("Manager","somebody","excellent",now(),2);
-
-insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("Manager", "self intro here...", "PRISIDENT", "https://www.baidu.com/img/bd_logo1.png", "responsibilities of prisident of actnow",1);
-insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("Rosie", "self intro here...", "VPE", "https://www.baidu.com/img/bd_logo1.png", "responsibilities of prisident of actnow",1);
-insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("CiCi", "self intro here...", "VPM", "https://www.baidu.com/img/bd_logo1.png", "responsibilities of prisident of actnow",1);
-
-insert into GUESTS (guest_name, guest_pic, guest_intro, guest_link,  club_id) values ("guest1", "https://www.baidu.com/img/bd_logo1.png", "name introduction", " ", 1);
-insert into GUESTS (guest_name, guest_pic, guest_intro, guest_link,  club_id) values ("guest2", "https://www.baidu.com/img/bd_logo1.png", "name introduction", " ", 1);
-
-insert into MEMBERS (member_name, member_pic, member_intro, member_link,  club_id) values ("member2", "https://www.baidu.com/img/bd_logo1.png", "name introduction", " ", 1);
-insert into MEMBERS (member_name, member_pic, member_intro, member_link,  club_id) values ("member3", "https://www.baidu.com/img/bd_logo1.png", "name introduction", " ", 1);
-insert into MEMBERS (member_name, member_pic, member_intro, member_link,  club_id) values ("member4", "https://www.baidu.com/img/bd_logo1.png", "name introduction", " ", 1);
+insert into MEMBERS (member_name, member_pic, member_intro, member_link,  club_id) values ("member1", "http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/toaster.jpg", "name introduction", " ", 1);
 
 insert into CCPROJECT values ( 1, 1, "CC", "ICE break speech");
 insert into CCPROJECT values ( 2, 2, "CC", "get to the point");
@@ -129,27 +129,6 @@ insert into CLPROJECT(cl_type,cl_level,cl_name,cc_role) values ( "CL", 1, "priac
 insert into CLPROJECT(cl_type,cl_level,cl_name,cc_role) values ( "CL", 1, "priactise listening", "ie");
 
 insert into CLRECORDS(complete_time,cl_id,member_id) value(now(), 1 ,1 );
-
-
-select * from CLUB;
-select * from GUESTS where club_id = 1;
-select * from MEMBERS where club_id = 1;
-select * from CCPROJECT;
-select * from CCRECORDS where member_id = 1;
-select * from CLPROJECT;
-select * from CLRECORDS where member_id = 1;
-
-#get cc status for specific user
-select CCRECORDS.member_id, CCRECORDS.ccr_status, CCRECORDS.complete_time, CCPROJECT.cc_id, CCPROJECT.cc_level, CCPROJECT.cc_type, CCPROJECT.cc_name
-	from (select * from CCRECORDS where CCRECORDS.member_id = 1) as CCRECORDS
-	RIGHT JOIN  CCPROJECT 
-	ON CCPROJECT.cc_id = CCRECORDS.cc_id
-
-#get cl status for specific user
-select CLRECORDS.member_id, CLRECORDS.clr_status, CLRECORDS.complete_time, CLPROJECT.cl_id, CLPROJECT.cl_type, CLPROJECT.cl_level, CLPROJECT.cl_name, CLPROJECT.cc_role
-	from (select * from CLRECORDS where CLRECORDS.member_id = 1) as CLRECORDS
-	RIGHT JOIN  CLPROJECT 
-	ON CLPROJECT.cl_id = CLRECORDS.cl_id;
 
 show tables;
 

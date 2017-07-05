@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 })); 
 
 var JsonResult = require('./jsonresult')
-var ClubService = require('./ClubService');
+var ClubService = require('./clubservice');
 
 app.get('/clubs/:clubId', function (req, res) {
    var clubService = new ClubService();

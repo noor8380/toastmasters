@@ -5,7 +5,7 @@ function DBFactory(){
         var connection = mysql.createConnection({     
           host     : 'localhost',       
           user     : 'root',              
-          password : 'dcxaadmin',       
+          password : 'mysql',       
           port: '3306',                   
           database: 'toastmasters', 
           charset:'UTF8_GENERAL_CI',

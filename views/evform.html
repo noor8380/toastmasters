@@ -2,57 +2,221 @@
 <head>
     <meta charset="UTF-8">
     <title>TOASTMASTERS CLUB</title>
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" /> 
     <link rel="stylesheet" href="resource/app.css">
     <link rel="stylesheet" href="resource/weui.min.css">
     <link rel="stylesheet" href="resource/jquery-weui.min.css">
+    <script src="resource/angular.min.js"></script>
 
+    <script type="text/javascript">
+
+var app = angular.module('myApp', []);
+
+app.config(['$locationProvider', function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    }]);
+
+app.controller('myCtrl', function($scope,$http,$location,$window) {
+    $scope.club = {};
+    $scope.meeting = {};
+    var parameters = $location.search();
+    $scope.loadReports = function(){
+        $http({
+              method: 'GET',
+              url: '/clubs/'+$scope.club.club_id+'/meetings/'+$scope.meeting.meeting_id
+        }).then(function successCallback(response) {
+              var reports = response.data.reports;
+              if (reports){
+                $scope.reports = reports;
+               $(document.body).pullToRefreshDone();
+              }else{
+                $.toptip('NO reports found', 'warning');
+              }
+         }, function errorCallback(response) {
+              $.toptip(response.data.error, 'error');
+         }); 
+    }
+
+    $scope.getlastestMeeting = function(callback){
+       $http({
+              method: 'GET',
+              url: '/clubs/'+parameters.clubId+'/meetings/latest'
+        }).then(function successCallback(response) {
+              var meetings = response.data.meeting;
+              if (meetings.length >= 1){
+                  $scope.meeting = meetings[0];
+                  console.log($scope.meeting);
+                  callback();
+              }else{
+                  $.toptip('NO meeting found', 'warning');
+              }
+         }, function errorCallback(response) {
+              $.toptip(response.data.error, 'error');
+         }); 
+    }
+
+    $scope.loadData = function(){
+        if(parameters.clubId){
+              $http({
+                method: 'GET',
+                url: '/clubs/'+parameters.clubId
+              }).then(function successCallback(response) {
+                    var club  = response.data.club;
+                    if (club){
+                      $scope.club = club;
+                      $.toptip('Welcome to '+$scope.club.club_name+' Toastmasters club', 'success');
+
+                      if(!parameters.meetingId){
+                          $scope.getlastestMeeting(function callback(meetingId){
+                              $scope.loadReports();
+                          });
+                      }else{
+                          $scope.meeting.meeting_id=parameters.meetingId;
+                          $scope.loadReports();
+                      }
+
+                    }else{
+                       $.toptip('NO CLUB FOUND', 'error');
+                    }
+
+                }, function errorCallback(response) {
+                    $.toptip(response.data.error, 'error');
+              }); 
+
+          }else{
+              $.toptip('wrong criterias for search', 'error');
+
+              // redirect to member list
+          }
+    }
+
+    $scope.loadData();
+    
+
+    $scope.addReport = function(){
+        var url = 'clubs/'+$scope.club.club_id+'/meetings/'+$scope.meeting.meeting_id+'/addreport';
+        var parameter = JSON.stringify(
+           {
+              evaluator: $scope.rq.evaluator, 
+              speaker: $scope.rq.speaker,
+              content: $scope.rq.content
+          });
+        $http({
+          url: url,
+          method: 'POST',
+          data: parameter
+        }).then(function successCallback(response){
+              console.log(response);
+              if(response.data.error){
+                   $.toptip("Add failed, please contact adminstrator.", 'error');
+                   return;
+              }
+              $.toptip("succeed, data reloading...", 'success');
+              $(document.body).pullToRefresh()
+              $scope.loadReports();
+          }, function errorCallback(response){
+              $.toptip(response.data, 'error');
+        });
+    };
+
+
+    $scope.backToHome = function(){
+        var url = "/club.html?clubId="+$scope.club.club_id;
+        $location.url(url);
+        $window.location.reload();
+    }
+
+    $scope.goToHistory = function(){
+        var url = "/evlist.html?clubId="+$scope.club.club_id;
+        $location.url(url);
+        $window.location.reload();
+    }
+
+    $(document.body).on("pull-to-refresh", function() {
+        console.log("refresh data...");
+        $scope.loadReports();
+      return;
+    });
+
+});
+
+    </script>
 </head>
-<body>
-    <div class="weui-panel weui-panel_access">
-      <div class="weui-panel__hd">ActNow Club Evalutions</div>
-      <div class="weui-panel__bd">
-            
-        <div class="weui-cells weui-cells_form">
-            <div class="weui-cell">
-              <div class="weui-cell__hd"><label class="weui-label">Evalutor</label></div>
-              <div class="weui-cell__bd">
-                <input class="weui-input" type="text" placeholder="your name">
-              </div>
-            </div>
-            <div class="weui-cells">
-              <div class="weui-cell weui-cell_select weui-cell_select-before">
-                <div class="weui-cell__hd">
-                  <select class="weui-select" name="select2">
-                    <option value="1">member</option>
-                    <option value="2">non-member</option>
-                  </select>
-                </div>
-                <div class="weui-cell__bd">
-                    <input class="weui-input" style="display:hidden;" type="text" placeholder="speaker's name">
-                    <select class="weui-select" name="select2">
-                      <option value="1">A</option>
-                      <option value="2">B</option>
-                    </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="weui-cell">
-              <div class="weui-cell__bd">
-                <textarea class="weui-textarea" placeholder="evaluator report" rows="5"></textarea>
-                <div class="weui-textarea-counter"><span>0</span>/400</div>
-              </div>
-            </div>
-            <a href="javascript:;" class="weui-btn weui-btn_primary">submit</a>
-       </div>
+<body ng-app="myApp" ng-controller="myCtrl">
+  <div class="weui-pull-to-refresh__layer">
+    <div class='weui-pull-to-refresh__arrow'></div>
+    <div class='weui-pull-to-refresh__preloader'></div>
+    <div class="down">
+        123
     </div>
+    <div class="up">释放刷新</div>
+    <div class="refresh">正在刷新</div>
+  </div>
+  <div class="weui-cells weui-cells_form"> {{club.club_name}} #117 evaluation report</div>
+              
+    <div class="weui-panel weui-panel_access">
+        <div class="weui-panel__bd">
+             <form name="myForm">       
+              <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">Evalutor</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" required name="speaker"  ng-model="rq.evaluator" type="text" placeholder="your name">
+                  </div>
+              </div>
+              <div class="weui-cell">
+                    <div class="weui-cell__hd"><label class="weui-label">Speaker</label></div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" name="speaker"  required ng-model="rq.speaker" type="text" placeholder="speaker name">
+                    </div>
+              </div>
+              <div class="weui-cell">
+                  <div class="weui-cell__bd">
+                    <textarea class="weui-textarea" required name="content" ng-model="rq.content" placeholder="evaluator report" rows="3"></textarea>
+                    <div class="weui-textarea-counter"><span>0</span>/255</div>
+                  </div>
+              </div>
+              <div class="weui-form-preview__ft">
+                   <button type="submit" 
+                        ng-disabled="myForm.$invalid"
+                        class="weui-form-preview__btn" 
+                        ng-class="{'weui-form-preview__btn_default':myForm.$invalid, 'weui-form-preview__btn_primary':!myForm.$invalid}"
+                        href="javascript:"
+                        ng-click="addReport()">submit</button>
+              </div>  
 
+              </form>      
+          </div>
 
+          <div class="weui-media-box weui-media-box_text" ng-repeat="report in reports | orderBy: 'complete_time': true ">
+            <h4 class="weui-media-box__title">To: {{report.speaker}}</h4>
+            <p class="weui-media-box__desc">{{report.content}}</p>
+            <ul class="weui-media-box__info">
+              <li class="weui-media-box__info__meta">{{report.evaluator}}</li>
+              <li class="weui-media-box__info__meta">time</li>
+              <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{report.complete_time | date }}</li>
+            </ul>
+          </div>
+
+          <div class="weui-form-preview__ft">
+            <a class="weui-form-preview__btn weui-form-preview__btn_primary" 
+              href="javascript:"
+              ng-click="backToHome()">Home</a>
+            <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" 
+              href="javascript:"
+              ng-click="goToHistory()">history reports</button>
+          </div>
+
+      </div>
+    </div>
+    <div ng-include="'foot.html'"></div> 
     <script src="resource/jquery.min.js"></script>
     <script src="resource/jquery-weui.min.js"></script>
     <script src="resource/swiper.min.js"></script>
     <script src="resource/city-picker.min.js"></script>
-
+    <script type="text/javascript">
+        $(document.body).pullToRefresh()
+    </script>
     
 </body>
 </html>

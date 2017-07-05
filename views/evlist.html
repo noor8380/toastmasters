@@ -2,53 +2,103 @@
 <head>
     <meta charset="UTF-8">
     <title>TOASTMASTERS CLUB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" /> 
     <link rel="stylesheet" href="resource/app.css">
+    <link rel="stylesheet" href="css/icono.min.css">
     <link rel="stylesheet" href="resource/weui.min.css">
     <link rel="stylesheet" href="resource/jquery-weui.min.css">
-</head>
-<body>
-  <div class="weui-pull-to-refresh__layer">
-    <div class='weui-pull-to-refresh__arrow'></div>
-    <div class='weui-pull-to-refresh__preloader'></div>
-    <div class="down">下拉刷新</div>
-    <div class="up">释放刷新</div>
-    <div class="refresh">正在刷新</div>
-  </div>
+    <script src="resource/angular.min.js"></script>
 
-    <div class="weui-panel weui-panel_access">
-      <div class="weui-panel__hd">ActNow Club Evalutions</div>
-      <div class="weui-panel__bd">
-            
-          <div class="weui-panel">
-            <div class="weui-panel__bd">
-              <div class="weui-media-box weui-media-box_text">
-                  <h4 class="weui-media-box__title">To: XXX</h4>
-                  <p class="weui-media-box__desc">stage performance is good.</p>
-                  <ul class="weui-media-box__info">
-                    <li class="weui-media-box__info__meta">evalutor's Name</li>
-                    <li class="weui-media-box__info__meta">Time</li>
-                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">2016/6/22</li>
-                  </ul>
+    <script type="text/javascript">
+
+var app = angular.module('myApp', []);
+
+app.config(['$locationProvider', function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    }]);
+
+app.controller('myCtrl', function($scope,$http,$location,$window) {
+    var parameters = $location.search();
+    if(parameters.clubId){
+        $http({
+          method: 'GET',
+          url: '/clubs/'+parameters.clubId
+        }).then(function successCallback(response) {
+              var club  = response.data.club;
+              if (club){
+                $scope.club = club;
+                $.toptip('Welcome to '+$scope.club.club_name+' Toastmasters club', 'success');
+
+                $http({
+                      method: 'GET',
+                      url: '/clubs/'+parameters.clubId+"/meetings"
+                }).then(function successCallback(response) {
+                      $scope.meetings  = response.data.meetings;
+                      if ($scope.meetings){
+                      }else{
+                          $.toptip('NO meetings found', 'error');
+                      }
+                 }, function errorCallback(response) {
+                      $.toptip(response.data.error, 'error');
+                 }); 
+
+              }else{
+                $.toptip('NO CLUB FOUND', 'error');
+              }
+          }, function errorCallback(response) {
+              $.toptip(response.data.error, 'error');
+        }); 
+
+        
+    }else{
+        $.toptip('NO meetings found', 'error');
+        // redirect to toastmaster club list laster
+    }
+
+    $scope.backToHome = function(){
+        var url = "/club.html?clubId="+$scope.club.club_id;
+        $location.url(url);
+        $window.location.reload();
+    }
+
+    $scope.showDetail = function(meeting_Id){
+        $location.url("evform.html?clubId="+$scope.club.club_id+"&meetingId="+meeting_Id);
+        $window.location.reload();
+    }
+
+});
+
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+
+    <div class="weui-panel">
+        <div class="weui-panel__hd"><div class="weui-cells__tips">
+              </a>{{club.club_name}} Meeting Histroy </div>
+        <div class="weui-panel__bd">
+          <div class="weui-media-box weui-media-box_small-appmsg">
+            <div class="weui-cells">
+              <a ng-repeat="meeting in meetings | orderBy:'meeting_id':true "
+                class="weui-cell weui-cell_access" 
+                href="javascript:;"
+                ng-click="showDetail(meeting.meeting_id)"
+                >
+                <div class="weui-cell__hd"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII=" alt="" style="width:20px;margin-right:5px;display:block"></div>
+                <div class="weui-cell__bd weui-cell_primary">
+                  <p>{{meeting.meeting_name}} evaluation report</p>
                 </div>
+                <span class="weui-cell__ft"></span>
+              </a>
+              
             </div>
           </div>
-
+        </div>
       </div>
-    </div>
 
-
+    <div ng-include="'foot.html'"></div>   
     <script src="resource/jquery.min.js"></script>
     <script src="resource/jquery-weui.min.js"></script>
-    <script src="resource/swiper.min.js"></script>
-    <script src="resource/city-picker.min.js"></script>
-    <script type="text/javascript">
-        $(document.body).pullToRefresh()
-        $(document.body).on("pull-to-refresh", function() {
-          console.log("refresh data...");
-          $(document.body).pullToRefreshDone();
-          return;
-        });
-    </script>
     
 </body>
 </html>

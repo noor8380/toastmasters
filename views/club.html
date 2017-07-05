@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="/" /> 
     <link rel="stylesheet" href="resource/app.css">
+    <link rel="stylesheet" href="css/icono.min.css">
     <link rel="stylesheet" href="resource/weui.min.css">
     <link rel="stylesheet" href="resource/jquery-weui.min.css">
     <script src="resource/angular.min.js"></script>
@@ -17,7 +18,7 @@ app.config(['$locationProvider', function($locationProvider) {
         $locationProvider.html5Mode(true);
     }]);
 
-app.controller('myCtrl', function($scope,$http,$location) {
+app.controller('myCtrl', function($scope,$http,$location,$window) {
     $scope.club = {
         clubName:"",
         clubId:0
@@ -30,11 +31,8 @@ app.controller('myCtrl', function($scope,$http,$location) {
         }).then(function successCallback(response) {
               var club  = response.data.club;
               if (club){
-                $scope.club.clubName = club.club_name;
-                $scope.club.clubPic = club.club_pic;
-                console.log($scope.club.clubPic);
-                $scope.club.clubIntro = club.club_intro;
-                $.toptip('Welcome to '+$scope.club.clubName+' Toastmasters club', 'success');
+                $scope.club = club;
+                $.toptip('Welcome to '+$scope.club.club_name+' Toastmasters club', 'success');
                 $(".swiper-container").swiper();
               }else{
                 $.toptip('NO CLUB FOUND', 'error');
@@ -47,8 +45,11 @@ app.controller('myCtrl', function($scope,$http,$location) {
         // redirect to toastmaster club list laster
     }
 
-    
-
+    $scope.jumpTo = function (page){
+        var url = "/"+page+"?clubId="+$scope.club.club_id;
+        $location.url(url);
+        $window.location.reload();
+    }
 });
 
     </script>
@@ -56,27 +57,82 @@ app.controller('myCtrl', function($scope,$http,$location) {
 <body ng-app="myApp" ng-controller="myCtrl">
 
     <div class="weui-panel weui-panel_access">
-      <div class="weui-panel__hd">{{club.clubName}} Toastmasters Club</div>
+      <div class="weui-panel__hd">{{club.club_name}} Toastmasters Club</div>
       <div class="weui-panel__bd"> 
             <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000">
               <div class="swiper-wrapper" style="height:auto">
-                <div class="swiper-slide" style="height:auto"><img ng-src="{{club.clubPic}}" alt=""></div>
+                <div class="swiper-slide" style="height:auto"><img ng-src="{{club.club_pic}}" alt=""></div>
               </div>
             </div>
-            <article class="weui-article">
-                <section>
-                    {{club.clubIntro}}
-                </section>
-            </article>
+            <div class="weui-grids">
+              <a href="{{club.club_intro_link}}" class="weui-grid js_grid">
+                <div class="weui-grid__icon">
+                  <i class="icono-home"></i>
+                </div>
+                <p class="weui-grid__label">
+                  Home
+                </p>
+              </a>
+
+              <a href="javascript:" ng-click="jumpTo('officers.html')" class="weui-grid js_grid">
+                <div class="weui-grid__icon">
+                  <i class="icono-support"></i>
+                </div>
+                <p class="weui-grid__label">
+                  Officers
+                </p>
+              </a>
+
+              <a href="javascript:" ng-click="jumpTo('guests.html')" class="weui-grid js_grid">
+                <div class="weui-grid__icon">
+                  <i class="icono-gplus"></i>
+                </div>
+                <p class="weui-grid__label">
+                  Guests
+                </p>
+              </a>
+
+               <a href="javascript:" ng-click="jumpTo('members.html')" class="weui-grid js_grid">
+                <div class="weui-grid__icon">
+                  <i class="icono-user"></i>
+                </div>
+                <p class="weui-grid__label">
+                  Members
+                </p>
+              </a>
+
+               <a href="{{club.club_meeting_link}}" class="weui-grid js_grid">
+                <div class="weui-grid__icon">
+                  <i class="icono-hamburger"></i>
+                </div>
+                <p class="weui-grid__label">
+                  Meetings
+                </p>
+              </a>
+
+              <a href="javascript:" ng-click="jumpTo('evlist.html')" class="weui-grid js_grid">
+                <div class="weui-grid__icon">
+                  <i class="icono-comment"></i>
+                </div>
+                <p class="weui-grid__label">
+                  Evalutions
+                </p>
+              </a>
+
+              <a href="" class="weui-grid js_grid">
+                <div class="weui-grid__icon">
+                  <i class="icono-sitemap"></i>
+                </div>
+                <p class="weui-grid__label">
+                  Settings
+                </p>
+              </a>
+
+          </div>
       </div>
-      <div class="weui-panel__ft">
-            <div class="weui-footer">
-              <p class="weui-footer__text">Supported by 大城小爱工作室</p>
-              <p class="weui-footer__text">Copyright © 2017-2018 dcxagzs@163.com</p>
-            </div>  
-      </div>  
     </div>
-      
+    
+    <div ng-include="'foot.html'"></div>  
     <script src="resource/jquery.min.js"></script>
     <script src="resource/jquery-weui.min.js"></script>
     <script src="resource/swiper.min.js"></script>

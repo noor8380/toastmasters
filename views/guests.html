@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="/" /> 
     <link rel="stylesheet" href="resource/app.css">
+    <link rel="stylesheet" href="css/icono.min.css">
     <link rel="stylesheet" href="resource/weui.min.css">
     <link rel="stylesheet" href="resource/jquery-weui.min.css">
     <script src="resource/angular.min.js"></script>
@@ -17,7 +18,7 @@ app.config(['$locationProvider', function($locationProvider) {
         $locationProvider.html5Mode(true);
     }]);
 
-app.controller('myCtrl', function($scope,$http,$location) {
+app.controller('myCtrl', function($scope,$http,$location,$window) {
     $scope.club = {
         clubName:"",
         clubId:0
@@ -65,13 +66,26 @@ app.controller('myCtrl', function($scope,$http,$location) {
         $scope.guestName = undefined;
     }
 
+    $scope.backToHome = function(){
+        var url = "/club.html?clubId="+$scope.club.club_id;
+        $location.url(url);
+        $window.location.reload();
+    }
+
 });
 
     </script>
 </head>
 <body ng-app="myApp" ng-controller="myCtrl">
     <div class="weui-panel weui-panel_access">
-      <div class="weui-panel__hd">{{club.club_name}} Club Honored Guests</div>
+       <div class="weui-panel__hd">
+         <div class="weui-cell__bd">
+               <a href="javascript:" ng-click="backToHome()">
+                 <i class="icono-caretLeftCircle"></i>
+              </a>{{club.club_name}} Club Guests
+          </div>
+          
+      </div>
       <div class="weui-panel__bd">
           
           <div class="weui-search-bar" id="searchBar">
@@ -104,6 +118,7 @@ app.controller('myCtrl', function($scope,$http,$location) {
       </div>
     </div>
 
+    <div ng-include="'foot.html'"></div> 
     <script src="resource/jquery.min.js"></script>
     <script src="resource/jquery-weui.min.js"></script>
     <script src="resource/swiper.min.js"></script>

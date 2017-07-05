@@ -12,6 +12,7 @@ create table CLUB (
 	club_intro_link text
 );
 
+
 create table OFFICERS (
 	officer_id int primary key AUTO_INCREMENT,
 	officer_name varchar(50) not null,
@@ -79,9 +80,32 @@ create table CLRECORDS (
 	FOREIGN KEY (member_id) REFERENCES MEMBERS(member_id)
 );
 
+create table MEETING (
+	meeting_id int primary key AUTO_INCREMENT,
+	meeting_name varchar(50) not null,
+	club_id int not null,
+	FOREIGN KEY (club_id) REFERENCES CLUB(club_id)
+);
+
+create table EVALUATIONS (
+	evaluation_id int primary key AUTO_INCREMENT,
+	evaluator varchar(50) not null,
+	speaker varchar(50) not null,
+	content text,
+	complete_time timestamp,
+	meeting_id int not null,
+	FOREIGN KEY (meeting_id) REFERENCES MEETING(meeting_id)
+);
+
+select * from EVALUATIONS where EVALUATIONS.meeting_id in (select meeting_id from MEETING where MEETING.club_id = 1 )
+select * from EVALUATIONS where EVALUATIONS.meeting_id = (select max(meeting_id) from MEETING where MEETING.club_id = 1)
+
 
 insert into ClUB (club_name,club_pic,club_officer_pic,club_meeting_link,club_intro_link) values ("ActNow","https://www.baidu.com/img/bd_logo1.png","https://www.baidu.com/img/bd_logo1.png","https://www.baidu.com/img/bd_logo1.png","https://www.baidu.com/img/bd_logo1.png");
 
+insert into MEETING(meeting_name,club_id) values("#117会议",1);
+insert into EVALUATIONS(evaluator,speaker,content,complete_time,meeting_id) values("Manager","somebody","excellent",now(),1);
+insert into EVALUATIONS(evaluator,speaker,content,complete_time,meeting_id) values("Manager","somebody","excellent",now(),2);
 
 insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("Manager", "self intro here...", "PRISIDENT", "https://www.baidu.com/img/bd_logo1.png", "responsibilities of prisident of actnow",1);
 insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("Rosie", "self intro here...", "VPE", "https://www.baidu.com/img/bd_logo1.png", "responsibilities of prisident of actnow",1);

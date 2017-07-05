@@ -20,6 +20,78 @@ function ClubService(){
 		   
 	}
 
+	this.getMeetings = function(clubId,successCallback,failCallback){    
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+		 	var  sql = 'SELECT * FROM MEETING where club_id = '+clubId;
+		  	conn.query(sql,function (err, result) {
+		            if(err){
+		              failCallback(err);
+		              console.log('[SELECT ERROR] - ',err.message);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
+		   });
+		   
+	}
+
+	this.getReports = function(clubId,meetingId,successCallback,failCallback){    
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+		 	var  sql = "select * from EVALUATIONS where EVALUATIONS.meeting_id = "+meetingId;
+		  	conn.query(sql,function (err, result) {
+		            if(err){
+		              failCallback(err);
+		              console.log('[SELECT ERROR] - ',err.message);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
+		   });
+		   
+	}
+
+	this.getlastestMeeting = function(clubId,successCallback,failCallback){
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+		 	var  sql = "select * from MEETING where MEETING.meeting_id = "+
+		 				"(select max(meeting_id) from MEETING where MEETING.club_id = "+clubId+")";
+		  	conn.query(sql,function (err, result) {
+		            if(err){
+		              failCallback(err);
+		              console.log('[SELECT ERROR] - ',err.message);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
+		   });
+	}
+
+	this.addReport = function(clubId,meetingId,evaluator,speaker,content,successCallback,failCallback){    
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+		 	var sql = "insert into EVALUATIONS(evaluator,speaker,content,complete_time,meeting_id) values("+conn.escape(evaluator)+","+conn.escape(speaker)+","+conn.escape(content)+",now(),"+meetingId+")"
+		  	conn.query(sql,function (err, result) {
+		            if(err){
+		              failCallback(err);
+		              console.log('[SELECT ERROR] - ',err.message);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
+		   });
+	}
+
+
 	this.getOfficers = function(clubId,successCallback,failCallback){    
 			var dbFactory = new DBFactory();
 			var conn = dbFactory.createConnection();

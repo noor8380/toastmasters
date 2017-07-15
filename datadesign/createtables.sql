@@ -113,7 +113,6 @@ insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic,
 insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("Sophie", "self intro here...", "Secretary", "http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/toaster.jpg", "roles introduction here...",1);
 insert into OFFICERS (officer_name, officer_intro, officer_role, officer_offpic, role_intro, club_id) values ("James", "self intro here...", "SAA", "http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/toaster.jpg", "roles introduction here...",1);
 
-
 insert into GUESTS (guest_name, guest_pic, guest_intro, guest_link,  club_id) values ("guest1", "http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/toaster.jpg", "name introduction", " ", 1);
 
 insert into MEMBERS (member_name, member_pic, member_intro, member_link,  club_id) values ("member1", "http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/toaster.jpg", "name introduction", " ", 1);

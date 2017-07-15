@@ -1,0 +1,192 @@
+	<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TOASTMASTERS CLUB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" /> 
+    <link rel="stylesheet" href="resource/app.css">
+    <link rel="stylesheet" href="css/icono.min.css">
+    <link rel="stylesheet" href="resource/weui.min.css">
+    <link rel="stylesheet" href="resource/jquery-weui.min.css">
+    <script src="resource/angular.min.js"></script>
+
+    <script type="text/javascript">
+
+var app = angular.module('myApp', []);
+app.config(['$locationProvider', function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    }]);
+app.controller('myCtrl', function($scope,$http,$location) {
+    $scope.club = {
+        clubName:"",
+        clubId:0
+    };
+    $scope.logIn = function(){
+        $.login({
+          title: 'Sign In',
+          username: 'club name...',  // 默认用户名
+          password: '123456',  // 默认密码
+          onOK: function (username, password) {
+              //点击确认
+              $scope.logIn();
+          },
+          onCancel: function () {
+              //点击取消
+               $.toast('Sign in Canceld', 'error');
+          }
+        });
+    }
+
+    var parameters = $location.search();
+    console.log(parameters);
+    if(parameters.clubId){
+        $scope.logIn();
+    }else{
+        $.toptip('NO CLUB FOUND', 'error');
+    }
+
+    $scope.addEv = function(){
+        $.prompt({
+              text: "no more than 50 characters",
+              title: "Evaluation name",
+              onOK: function(text) {
+                  $.alert("您的名字是:"+text, "角色设定成功");
+              },
+              onCancel: function() {
+                 console.log("onCancel node");
+              },
+              input: '#1 evaluation report'
+        });
+    }
+
+});
+
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+
+     <div class="weui-panel weui-panel_access">
+      <div class="weui-panel__hd">Toastmasters Club Management</div>
+      <div class="weui-panel__bd"> 
+
+          <div class="weui-grids">
+              <a href="{{club.club_intro_link}}" class="weui-grid js_grid">
+                <div class="weui-grid__icon">
+                  <i class="icono-chain"></i>
+                </div>
+                <p class="weui-grid__label">
+                  Meetings
+                </p>
+              </a>
+
+              <a href="javascript:;" ng-click="addEv()" id='show-prompt'  class="weui-grid js_grid">
+                <div class="weui-grid__icon">
+                  <i class="icono-plusCircle"></i>
+                </div>
+                <p class="weui-grid__label">
+                  evaluations
+                </p>
+              </a>
+          </div>
+
+
+          <div class="weui-panel weui-panel_access">
+            <div class="weui-panel__hd">CC Requests</div>
+            <div class="weui-panel__bd">
+                <div class="weui-cells" style="margin-top: 0px">
+                  <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                      <p>DFFSDFESEfsEF FAE request CC4</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                          <div class="button_sp_area">
+                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
+                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
+                          </div>
+                    </div>
+                  </div>
+                  <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                      <p>DFFSDFESEfsEF FAE request CC4</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                          <div class="button_sp_area">
+                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
+                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
+                          </div>
+                    </div>
+                  </div>
+                  <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                      <p>DFFSDFESEfsEF FAE request CC4</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                          <div class="button_sp_area">
+                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
+                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
+                          </div>
+                    </div>
+                  </div>
+
+                </div>
+
+            </div>
+            <div class="weui-panel__hd">CL Requests</div>
+            <div class="weui-panel__bd">
+                <div class="weui-cells" style="margin-top: 0px">
+                  <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                      <p>DFFSDFESEfsEF FAE request CC4</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                          <div class="button_sp_area">
+                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
+                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
+                          </div>
+                    </div>
+                  </div>
+                  <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                      <p>DFFSDFESEfsEF FAE request CC4</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                          <div class="button_sp_area">
+                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
+                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
+                          </div>
+                    </div>
+                  </div>
+                  <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                      <p>DFFSDFESEfsEF FAE request CC4</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                          <div class="button_sp_area">
+                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
+                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
+                          </div>
+                    </div>
+                  </div>
+
+                </div>
+
+            </div>
+          </div>
+
+
+      </div>
+    </div>
+      
+    <div ng-include="'foot.html'"></div>  
+    <script src="resource/jquery.min.js"></script>
+    <script src="resource/jquery-weui.min.js"></script>
+    <script src="resource/swiper.min.js"></script>
+    <script src="resource/city-picker.min.js"></script>
+
+    <script type="text/javascript">
+       
+
+
+    </script>
+</body>
+</html>

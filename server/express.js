@@ -13,6 +13,43 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 var JsonResult = require('./jsonresult')
 var ClubService = require('./clubservice');
 
+app.post('/clubs/:clubId/isAdmin', function (req, res) {
+    var user = req.body.user;
+    var passwd = req.body.passwd;
+    var clubService = new ClubService();
+    clubService.checkPasswd(req.params.clubId,function(results){
+         var spass = results[0].sys_passwd;
+         if (passwd == spass){
+            res.json({status: "true"});
+         }else{
+            res.json({status: "false"});
+         } 
+     },function(errMsg){
+         res.json({status: "false"});
+     });
+})
+
+app.post('/clubs/:clubId/ccRequests', function (req, res) {
+   var passwd = req.body.passwd; 
+   var clubService = new ClubService();
+   clubService.getCCRequests(req.params.clubId, function(results){
+       res.json({records: results});
+   },function(errMsg){
+       res.json({error: errMsg});
+   });
+})
+
+app.post('/clubs/:clubId/clRequests', function (req, res) {
+   var passwd = req.body.passwd; 
+   var clubService = new ClubService();
+   clubService.getCLRequests(req.params.clubId, function(results){
+       res.json({records: results});
+   },function(errMsg){
+       res.json({error: errMsg});
+   });
+})
+
+
 app.get('/clubs/:clubId', function (req, res) {
    var clubService = new ClubService();
    clubService.getClubInfo(req.params.clubId, function(results){

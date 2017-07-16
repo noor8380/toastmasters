@@ -9,8 +9,17 @@ create table CLUB (
 	club_pic varchar(255),
 	club_officer_pic text,
 	club_meeting_link text,
-	club_intro_link text
+	club_intro_link text,
+	sys_agenda_link text
 );
+
+create table CLUB_SYS (
+	sys_id int primary key AUTO_INCREMENT,
+	sys_passwd varchar(255),
+	club_id int not null,
+	FOREIGN KEY (club_id) REFERENCES CLUB(club_id)
+);
+
 
 create table OFFICERS (
 	officer_id int primary key AUTO_INCREMENT,
@@ -43,6 +52,10 @@ create table MEMBERS (
 	FOREIGN KEY (club_id) REFERENCES CLUB(club_id)
 
 );
+
+select * from MEMBERS left join 
+	(select CCRECORDS left join  CCPROJECT on CCRECORDS.ccr_id = CCPROJECT.ccr_id) as CCRECORDS2
+	on MEMBERS.member_id = CCRECORDS2.member_id where MEMBERS.club_id = 1;
 
 create table CCPROJECT (
 	cc_id int primary key,
@@ -96,11 +109,14 @@ create table EVALUATIONS (
 	FOREIGN KEY (meeting_id) REFERENCES MEETING(meeting_id)
 );
 
-insert into CLUB (club_name,club_pic,club_officer_pic,club_meeting_link,club_intro_link) values ("ActNow",
+insert into CLUB (club_name,club_pic,club_officer_pic,club_meeting_link,club_intro_link,sys_agenda_link) values ("ActNow",
 	"http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/794062813.jpg",
 	"http://selfmlj.oss-cn-shanghai.aliyuncs.com/tmms/591708458.jpg",
 	"http://toastmaster.sinaapp.com/toastmaster/index.php/event/list_event/club_id/1.html",
-	"https://www.baidu.com/img/bd_logo1.png");
+	"https://www.baidu.com/img/bd_logo1.png",
+	"http://toastmaster.sinaapp.com/toastmaster/index.php/event/list_event/club_id/1.html");
+
+insert into CLUB_SYS (sys_passwd,club_id) values("123456",1);
 
 insert into MEETING(meeting_name,club_id) values("ActNow #118 English Meeting",1);
 insert into EVALUATIONS(evaluator,speaker,content,complete_time,meeting_id) values("tester","Manager","excellent",now(),1);

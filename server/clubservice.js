@@ -2,6 +2,22 @@ var DBFactory = require('./database');
 
 function clubservice(){
 	
+	this.checkPasswd = function(clubId,successCallback,failCallback){    
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+		 	var  sql = 'SELECT sys_passwd FROM CLUB_SYS where club_id = '+clubId;
+		  	conn.query(sql,function (err, result) {
+		  			if(err){
+		              failCallback(err);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
+		   });
+	}
+
 	this.getClubInfo = function(clubId,successCallback,failCallback){    
 			var dbFactory = new DBFactory();
 			var conn = dbFactory.createConnection();
@@ -16,8 +32,7 @@ function clubservice(){
 		            successCallback(result);
 		     		dbFactory.closeConnection(conn);
 		     		return result;
-		   });
-		   
+		   });   
 	}
 
 	this.getMeetings = function(clubId,successCallback,failCallback){    
@@ -35,7 +50,6 @@ function clubservice(){
 		     		dbFactory.closeConnection(conn);
 		     		return result;
 		   });
-		   
 	}
 
 	this.getReports = function(clubId,meetingId,successCallback,failCallback){    
@@ -211,6 +225,42 @@ function clubservice(){
 			var dbFactory = new DBFactory();
 			var conn = dbFactory.createConnection();
 		 	var  sql = "insert into CLRECORDS(cl_id,member_id) values("+cLId+" , "+memberId+")";
+		  	conn.query(sql,function (err, result) {
+		            if(err){
+		              failCallback(err);
+		              console.log('[SELECT ERROR] - ',err.message);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
+		   });
+	}
+
+
+	this.getCCRequests = function(clubId, successCallback, failCallback){
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+		 	var  sql = "select * from MEMBERS left join CCRECORDS on MEMBERS.member_id = CCRECORDS.member_id where MEMBERS.club_id = "+clubId;
+		  	conn.query(sql,function (err, result) {
+		            if(err){
+		              failCallback(err);
+		              console.log('[SELECT ERROR] - ',err.message);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
+		   });
+	}
+
+
+	this.getCLRequests = function(clubId, successCallback, failCallback){
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+		 	var  sql = "select * from MEMBERS left join CLRECORDS on MEMBERS.member_id = clr_id.member_id where MEMBERS.club_id = "+clubId;
 		  	conn.query(sql,function (err, result) {
 		            if(err){
 		              failCallback(err);

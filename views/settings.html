@@ -16,31 +16,77 @@ var app = angular.module('myApp', []);
 app.config(['$locationProvider', function($locationProvider) {
         $locationProvider.html5Mode(true);
     }]);
-app.controller('myCtrl', function($scope,$http,$location) {
+app.controller('myCtrl', function($scope,$http,$location,$window) {
+    
     $scope.club = {
         clubName:"",
         clubId:0
     };
+
+    $scope.backToHome = function(){
+        var url = "/club.html?clubId="+$scope.clubId;
+        $location.url(url);
+        $window.location.reload();
+    }
+
     $scope.logIn = function(){
         $.login({
           title: 'Sign In',
-          username: 'club name...',  // 默认用户名
-          password: '123456',  // 默认密码
+          username: $scope.club.club_name,  // 默认用户名
+          password: '12345',  // 默认密码
           onOK: function (username, password) {
-              //点击确认
-              $scope.logIn();
+              var url = 'clubs/'+$scope.club.club_id+'/isAdmin';
+              var parameter = JSON.stringify({
+                    user: username, 
+                    passwd: password
+              });
+              $http({
+                url: url,
+                method: 'POST',
+                data: parameter
+              }).then(function successCallback(response){
+                    if(response.data.status == "true"){
+                         $.toptip("welcome club administrator!", 'success');  
+                         $scope.password = password;
+                         //load cc requests
+                         $scope.getCCRequest();
+                         //load cl requests
+                         $scope.getCLRequest();
+                    }else{
+                        $.alert("wrong passwd!", function() {
+                            $scope.logIn();
+                        });
+                    } 
+                }, function errorCallback(response){
+                     $.alert("system error, pls try again later!", function() {
+                            $scope.backToHome();
+                    });
+              });
           },
           onCancel: function () {
               //点击取消
                $.toast('Sign in Canceld', 'error');
+               $scope.backToHome();
           }
         });
     }
 
     var parameters = $location.search();
-    console.log(parameters);
     if(parameters.clubId){
-        $scope.logIn();
+        $http({
+          method: 'GET',
+          url: '/clubs/'+parameters.clubId
+        }).then(function successCallback(response) {
+              var club  = response.data.club;
+              if (club){
+                $scope.club = club;
+                $scope.logIn();
+              }else{
+                $.toptip('NO CLUB FOUND', 'error');
+              }
+          }, function errorCallback(response) {
+              $.toptip(response.data.error, 'error');
+        }); 
     }else{
         $.toptip('NO CLUB FOUND', 'error');
     }
@@ -56,6 +102,39 @@ app.controller('myCtrl', function($scope,$http,$location) {
                  console.log("onCancel node");
               },
               input: '#1 evaluation report'
+        });
+    }
+
+    $scope.getCCRequest = function(){
+        var url = 'clubs/'+$scope.club.club_id+'/ccRequests';
+        var parameter = JSON.stringify({
+              passwd: $scope.password
+        });
+        $http({
+          url: url,
+          method: 'POST',
+          data: parameter
+        }).then(function successCallback(response){
+             $scope.CCRequests = response.data.records;
+          }, function errorCallback(response){
+             $.toptip("no cc records found", 'error');
+        });
+
+    }
+
+    $scope.getCLRequest = function(){
+        var url = 'clubs/'+$scope.club.club_id+'/clRequests';
+        var parameter = JSON.stringify({
+              passwd: $scope.password
+        });
+        $http({
+          url: url,
+          method: 'POST',
+          data: parameter
+        }).then(function successCallback(response){
+             $scope.CLRequests = response.data.records;
+          }, function errorCallback(response){
+              $.toptip("no cl records found", 'error');
         });
     }
 

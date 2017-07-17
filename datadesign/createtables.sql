@@ -153,6 +153,5 @@ select MEMBERS.member_id, MEMBERS.member_name, MEMBERS.club_id, CLRECORDS2.cl_id
 			from CLRECORDS left join  CLPROJECT on CLRECORDS.cl_id = CLPROJECT.cl_id) as CLRECORDS2
 	on MEMBERS.member_id = CLRECORDS2.member_id where MEMBERS.club_id = 1;
 
-
 show tables;
 

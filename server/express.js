@@ -18,7 +18,7 @@ app.post('/clubs/:clubId/isAdmin', function (req, res) {
     var passwd = req.body.passwd;
     var clubService = new ClubService();
     clubService.checkPasswd(req.params.clubId,function(results){
-         if(results >= 1){
+         if(results.length >= 1){
              var spass = results[0].sys_passwd;
              if (passwd == spass){
                 res.json({status: "true"});

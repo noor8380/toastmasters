@@ -18,10 +18,15 @@ app.post('/clubs/:clubId/isAdmin', function (req, res) {
     var passwd = req.body.passwd;
     var clubService = new ClubService();
     clubService.checkPasswd(req.params.clubId,function(results){
-         var spass = results[0].sys_passwd;
-         if (passwd == spass){
-            res.json({status: "true"});
-         }else{
+         if(results){
+             var spass = results[0].sys_passwd;
+             if (passwd == spass){
+                res.json({status: "true"});
+             }else{
+                res.json({status: "false"});
+             } 
+         }
+         else{
             res.json({status: "false"});
          } 
      },function(errMsg){

@@ -52,6 +52,23 @@ function clubservice(){
 		   });
 	}
 
+	this.addEvaluation = function(clubId,meetingName,successCallback,failCallback){    
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+		 	var  sql = "insert into MEETING(meeting_name,club_id) values('"+meetingName+"',"+clubId+");";
+		  	conn.query(sql,function (err, result) {
+		            if(err){
+		              failCallback(err);
+		              console.log('[SQL ERROR] - ',err.message);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
+		   });
+	}
+
 	this.getReports = function(clubId,meetingId,successCallback,failCallback){    
 			var dbFactory = new DBFactory();
 			var conn = dbFactory.createConnection();

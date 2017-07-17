@@ -39,6 +39,29 @@ app.post('/clubs/:clubId/ccRequests', function (req, res) {
    });
 })
 
+app.post('/clubs/:clubId/newEvaluation', function (req, res) {
+   var passwd = req.body.passwd;
+   var reportname = req.body.reportname
+   var clubService = new ClubService();
+   clubService.checkPasswd(req.params.clubId,function(results){
+       var spass = results[0].sys_passwd;
+       if (passwd == spass){
+          clubService.addEvaluation(req.params.clubId,reportname,function(results){
+              res.json({status: "true"});
+          },function(errMsg){
+              res.json({status: "false"});
+          });
+       }else{
+          res.json({
+              status: "false",
+              errMgs: "no permission"
+          });
+       } 
+   },function(errMsg){
+       res.json({status: "false"});
+   });
+})
+
 app.post('/clubs/:clubId/ccRequests/:ccrId/approve', function (req, res) {
    var passwd = req.body.passwd; 
    var clubService = new ClubService();

@@ -97,7 +97,24 @@ app.controller('myCtrl', function($scope,$http,$location,$window ) {
               text: "no more than 50 characters",
               title: "Evaluation name",
               onOK: function(text) {
-                  $.alert("您的名字是:"+text, "角色设定成功");
+                  var url = 'clubs/'+$scope.club.club_id+'/newEvaluation';
+                  var parameter = JSON.stringify({
+                        passwd: $scope.password,
+                        reportname:text
+                  });
+                  $http({
+                    url: url,
+                    method: 'POST',
+                    data: parameter
+                  }).then(function successCallback(response){
+                        if (response.data.status == "true"){
+                           $.alert(text, "new evaluation added");
+                        }else{
+                           $.toptip("system error, pls try again later", 'error');
+                        }
+                    }, function errorCallback(response){
+                       $.toptip("no cc records found", 'error');
+                  });
               },
               onCancel: function() {
                  console.log("onCancel node");
@@ -270,12 +287,12 @@ app.controller('myCtrl', function($scope,$http,$location,$window ) {
       <div class="weui-panel__bd"> 
 
           <div class="weui-grids">
-              <a href="{{club.club_intro_link}}" class="weui-grid js_grid">
+              <a href="{{club.sys_agenda_link}}" class="weui-grid js_grid">
                 <div class="weui-grid__icon">
                   <i class="icono-chain"></i>
                 </div>
                 <p class="weui-grid__label">
-                  Meetings
+                  Agenda
                 </p>
               </a>
 
@@ -284,7 +301,7 @@ app.controller('myCtrl', function($scope,$http,$location,$window ) {
                   <i class="icono-plusCircle"></i>
                 </div>
                 <p class="weui-grid__label">
-                  evaluations
+                  Evaluation
                 </p>
               </a>
           </div>

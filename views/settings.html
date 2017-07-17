@@ -16,7 +16,7 @@ var app = angular.module('myApp', []);
 app.config(['$locationProvider', function($locationProvider) {
         $locationProvider.html5Mode(true);
     }]);
-app.controller('myCtrl', function($scope,$http,$location,$window) {
+app.controller('myCtrl', function($scope,$http,$location,$window ) {
     
     $scope.club = {
         clubName:"",
@@ -24,9 +24,10 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
     };
 
     $scope.backToHome = function(){
-        var url = "/club.html?clubId="+$scope.clubId;
-        $location.url(url);
-        $window.location.reload();
+        var url = "/club.html?clubId="+$scope.club.club_id;
+        window.location.href = url;
+        //$location.url(url);
+        //$window.location.reload();
     }
 
     $scope.logIn = function(){
@@ -60,12 +61,12 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
                 }, function errorCallback(response){
                      $.alert("system error, pls try again later!", function() {
                             $scope.backToHome();
-                    });
+                     });
               });
           },
           onCancel: function () {
               //点击取消
-               $.toast('Sign in Canceld', 'error');
+               //$.toast('Sign in Canceld');
                $scope.backToHome();
           }
         });
@@ -138,6 +139,126 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
         });
     }
 
+
+    $scope.approveCC = function(request){
+        if(request.ccr_status){return false;}
+
+        if( ! $scope.password ){
+            $.alert("session invalid, log in first!", function() {
+                $scope.logIn();
+            });
+        }
+
+        var url = 'clubs/'+$scope.club.club_id+'/ccRequests/'+request.ccr_id+"/approve";
+        var parameter = JSON.stringify({
+              passwd: $scope.password
+        });
+        $http({
+          url: url,
+          method: 'POST',
+          data: parameter
+        }).then(function successCallback(response){
+              if (response.data.status == "true"){
+                 request.ccr_status = 1;
+                 $.toptip(request.member_name+" already been approved", 'success');
+              }else{
+                 $.toptip("system error, pls try again later", 'error');
+              }
+          }, function errorCallback(response){
+              $.toptip("system error, pls try again later", 'error');
+        });
+
+
+    }
+
+    $scope.declineCC = function(request){
+
+        if(request.ccr_status){return false;}
+        if( ! $scope.password ){
+            $.alert("session invalid, log in first!", function() {
+                $scope.logIn();
+            });
+        }
+
+        var url = 'clubs/'+$scope.club.club_id+'/ccRequests/'+request.ccr_id+"/decline";
+        var parameter = JSON.stringify({
+              passwd: $scope.password
+        });
+        $http({
+          url: url,
+          method: 'POST',
+          data: parameter
+        }).then(function successCallback(response){
+              if (response.data.status == "true"){
+                  request.ccr_status = -1;
+                  $.toptip(request.member_name+" already been declined!", 'success');
+              }else{
+                 $.toptip("system error, pls try again later", 'error');
+              }
+          }, function errorCallback(response){
+              $.toptip("system error, pls try again later", 'error');
+        });
+    }
+
+    $scope.approveCL = function(request){
+
+        if(request.clr_status){return false;}
+        if( ! $scope.password ){
+            $.alert("session invalid, log in first!", function() {
+                $scope.logIn();
+            });
+        }
+
+        var url = 'clubs/'+$scope.club.club_id+'/clRequests/'+request.clr_id+"/approve";
+        var parameter = JSON.stringify({
+              passwd: $scope.password
+        });
+        $http({
+          url: url,
+          method: 'POST',
+          data: parameter
+        }).then(function successCallback(response){
+              if (response.data.status == "true"){
+                    request.clr_status = 1;
+                   $.toptip(request.member_name+" already been approved", 'success');
+              }else{
+                 $.toptip("system error, pls try again later", 'error');
+              }
+            
+          }, function errorCallback(response){
+              $.toptip("system error, pls try again later", 'error');
+        });
+
+    }
+    
+    $scope.declineCL = function(request){
+        if(request.clr_status){return false;}
+        if( ! $scope.password ){
+            $.alert("session invalid, log in first!", function() {
+                $scope.logIn();
+            });
+        }
+
+        var url = 'clubs/'+$scope.club.club_id+'/clRequests/'+request.clr_id+"/decline";
+        var parameter = JSON.stringify({
+              passwd: $scope.password
+        });
+        $http({
+          url: url,
+          method: 'POST',
+          data: parameter
+        }).then(function successCallback(response){
+              if (response.data.status == "true"){
+                 request.clr_status = -1;
+                 $.toptip(request.member_name+" already been declined!", 'success');
+              }else{
+                 $.toptip("system error, pls try again later", 'error');
+              }
+          }, function errorCallback(response){
+              $.toptip("system error, pls try again later", 'error');
+        });
+    }
+
 });
 
     </script>
@@ -173,80 +294,45 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
             <div class="weui-panel__hd">CC Requests</div>
             <div class="weui-panel__bd">
                 <div class="weui-cells" style="margin-top: 0px">
-                  <div class="weui-cell">
+                  
+                  <div class="weui-cell" ng-repeat="request in CCRequests">
                     <div class="weui-cell__bd">
-                      <p>DFFSDFESEfsEF FAE request CC4</p>
+                      <p>{{request.member_name}} applying {{request.cc_type}}{{request.cc_level}}</p>
                     </div>
                     <div class="weui-cell__ft">
                           <div class="button_sp_area">
-                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
-                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
+                            <a href="javascript:;" ng-click="approveCC(request)" ng-class="{'weui-btn_disabled': request.ccr_status != 0}"
+                                class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
+                            <a href="javascript:;" ng-click="declineCC(request)"
+                               ng-class="{'weui-btn_disabled': request.ccr_status != 0}"
+                               class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
                           </div>
                     </div>
                   </div>
-                  <div class="weui-cell">
-                    <div class="weui-cell__bd">
-                      <p>DFFSDFESEfsEF FAE request CC4</p>
-                    </div>
-                    <div class="weui-cell__ft">
-                          <div class="button_sp_area">
-                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
-                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
-                          </div>
-                    </div>
-                  </div>
-                  <div class="weui-cell">
-                    <div class="weui-cell__bd">
-                      <p>DFFSDFESEfsEF FAE request CC4</p>
-                    </div>
-                    <div class="weui-cell__ft">
-                          <div class="button_sp_area">
-                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
-                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
-                          </div>
-                    </div>
-                  </div>
-
+                  
                 </div>
 
             </div>
             <div class="weui-panel__hd">CL Requests</div>
             <div class="weui-panel__bd">
                 <div class="weui-cells" style="margin-top: 0px">
-                  <div class="weui-cell">
+                 
+                  <div class="weui-cell" ng-repeat="request in CLRequests">
                     <div class="weui-cell__bd">
-                      <p>DFFSDFESEfsEF FAE request CC4</p>
+                      <p>{{request.member_name}} applying {{request.cl_type}}{{request.cl_level}}</p>
                     </div>
                     <div class="weui-cell__ft">
                           <div class="button_sp_area">
-                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
-                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
+                            <a href="javascript:;" ng-click="approveCL(request)" 
+                            ng-class="{'weui-btn_disabled': request.clr_status != 0}"
+                            class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
+                            <a href="javascript:;" ng-click="declineCL(request)" 
+                            ng-class="{'weui-btn_disabled': request.clr_status != 0}"
+                            class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
                           </div>
                     </div>
                   </div>
-                  <div class="weui-cell">
-                    <div class="weui-cell__bd">
-                      <p>DFFSDFESEfsEF FAE request CC4</p>
-                    </div>
-                    <div class="weui-cell__ft">
-                          <div class="button_sp_area">
-                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
-                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
-                          </div>
-                    </div>
-                  </div>
-                  <div class="weui-cell">
-                    <div class="weui-cell__bd">
-                      <p>DFFSDFESEfsEF FAE request CC4</p>
-                    </div>
-                    <div class="weui-cell__ft">
-                          <div class="button_sp_area">
-                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary">Approve</a>
-                            <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn">Decline</a>
-                          </div>
-                    </div>
-                  </div>
-
+                  
                 </div>
 
             </div>

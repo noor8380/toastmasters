@@ -25,7 +25,7 @@ function clubservice(){
 		  	conn.query(sql,function (err, result) {
 		            if(err){
 		              failCallback(err);
-		              console.log('[SELECT ERROR] - ',err.message);
+		              console.log('[SQL ERROR] - ',err.message);
 		              dbFactory.closeConnection(conn);
 		              return;
 		            }
@@ -42,7 +42,7 @@ function clubservice(){
 		  	conn.query(sql,function (err, result) {
 		            if(err){
 		              failCallback(err);
-		              console.log('[SELECT ERROR] - ',err.message);
+		              console.log('[SQL ERROR] - ',err.message);
 		              dbFactory.closeConnection(conn);
 		              return;
 		            }
@@ -59,7 +59,7 @@ function clubservice(){
 		  	conn.query(sql,function (err, result) {
 		            if(err){
 		              failCallback(err);
-		              console.log('[SELECT ERROR] - ',err.message);
+		              console.log('[SQL ERROR] - ',err.message);
 		              dbFactory.closeConnection(conn);
 		              return;
 		            }
@@ -78,7 +78,7 @@ function clubservice(){
 		  	conn.query(sql,function (err, result) {
 		            if(err){
 		              failCallback(err);
-		              console.log('[SELECT ERROR] - ',err.message);
+		              console.log('[SQL ERROR] - ',err.message);
 		              dbFactory.closeConnection(conn);
 		              return;
 		            }
@@ -95,7 +95,7 @@ function clubservice(){
 		  	conn.query(sql,function (err, result) {
 		            if(err){
 		              failCallback(err);
-		              console.log('[SELECT ERROR] - ',err.message);
+		              console.log('[SQL ERROR] - ',err.message);
 		              dbFactory.closeConnection(conn);
 		              return;
 		            }
@@ -113,7 +113,7 @@ function clubservice(){
 		  	conn.query(sql,function (err, result) {
 		            if(err){
 		              failCallback(err);
-		              console.log('[SELECT ERROR] - ',err.message);
+		              console.log('[SQL ERROR] - ',err.message);
 		              dbFactory.closeConnection(conn);
 		              return;
 		            }
@@ -130,7 +130,7 @@ function clubservice(){
 		  	conn.query(sql,function (err, result) {
 		            if(err){
 		              failCallback(err);
-		              console.log('[SELECT ERROR] - ',err.message);
+		              console.log('[SQL ERROR] - ',err.message);
 		              dbFactory.closeConnection(conn);
 		              return;
 		            }
@@ -147,7 +147,7 @@ function clubservice(){
 		  	conn.query(sql,function (err, result) {
 		            if(err){
 		              failCallback(err);
-		              console.log('[SELECT ERROR] - ',err.message);
+		              console.log('[SQL ERROR] - ',err.message);
 		              dbFactory.closeConnection(conn);
 		              return;
 		            }
@@ -164,7 +164,7 @@ function clubservice(){
 		  	var resultObject={};
 		  	conn.query(sql,function (err, result) {
 	            if(err){
-	              	console.log('[SELECT ERROR] - ',err.message);
+	              	console.log('[SQL ERROR] - ',err.message);
 	              	dbFactory.closeConnection(conn);
 	              	return failCallback(err);
 	            }
@@ -177,7 +177,7 @@ function clubservice(){
 									" ON CCPROJECT.cc_id = CCRECORDS.cc_id";
 	            	conn.query(sql2,function (err, ccobjects) {
 	            		if(err){
-			              	console.log('[SELECT ERROR] - ',err.message);
+			              	console.log('[SQL ERROR] - ',err.message);
 			              	dbFactory.closeConnection(conn);
 			              	return failCallback(err);
 			            }
@@ -190,7 +190,7 @@ function clubservice(){
 											"ON CLPROJECT.cl_id = CLRECORDS.cl_id";
 	            			conn.query(sql3,function (err, clobjects) {
 	            				if(err){
-					              	console.log('[SELECT ERROR] - ',err.message);
+					              	console.log('[SQL ERROR] - ',err.message);
 					              	dbFactory.closeConnection(conn);
 					              	return failCallback(err);
 					            }
@@ -211,7 +211,7 @@ function clubservice(){
 		  	conn.query(sql,function (err, result) {
 		            if(err){
 		              failCallback(err);
-		              console.log('[SELECT ERROR] - ',err.message);
+		              console.log('[SQL ERROR] - ',err.message);
 		              dbFactory.closeConnection(conn);
 		              return;
 		            }
@@ -228,7 +228,7 @@ function clubservice(){
 		  	conn.query(sql,function (err, result) {
 		            if(err){
 		              failCallback(err);
-		              console.log('[SELECT ERROR] - ',err.message);
+		              console.log('[SQL ERROR] - ',err.message);
 		              dbFactory.closeConnection(conn);
 		              return;
 		            }
@@ -242,11 +242,53 @@ function clubservice(){
 	this.getCCRequests = function(clubId, successCallback, failCallback){
 			var dbFactory = new DBFactory();
 			var conn = dbFactory.createConnection();
-		 	var  sql = "select * from MEMBERS left join CCRECORDS on MEMBERS.member_id = CCRECORDS.member_id where MEMBERS.club_id = "+clubId;
+
+			var  sql = "select MEMBERS.member_id, MEMBERS.member_name, MEMBERS.club_id, CCRECORDS2.ccr_id,"+
+							" CCRECORDS2.ccr_status, CCRECORDS2.cc_level, CCRECORDS2.cc_type"+  
+						" from MEMBERS left join "+
+						" (select CCRECORDS.ccr_id, CCRECORDS.ccr_status, CCRECORDS.member_id, CCPROJECT.cc_id, CCPROJECT.cc_level, CCPROJECT.cc_type"+
+								" from CCRECORDS left join  CCPROJECT on CCRECORDS.cc_id = CCPROJECT.cc_id) as CCRECORDS2"+
+						" on MEMBERS.member_id = CCRECORDS2.member_id where CCRECORDS2.ccr_status = 0 and MEMBERS.club_id = "+clubId;
 		  	conn.query(sql,function (err, result) {
 		            if(err){
 		              failCallback(err);
-		              console.log('[SELECT ERROR] - ',err.message);
+		              console.log('[SQL ERROR] - ',err.message);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
+		   });
+	}
+
+
+	this.approveCCRequest = function(ccrId, successCallback, failCallback){
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+
+			var  sql = "update CCRECORDS set ccr_status = 1 where ccr_id = "+ccrId;
+		  	conn.query(sql,function (err, result) {
+		            if(err){
+		              failCallback(err);
+		              console.log('[SQL ERROR] - ',err.message);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
+		   });
+	}
+
+	this.delCCRequest = function(ccrId, successCallback, failCallback){
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+			var  sql = "delete from CCRECORDS where ccr_id = "+ccrId;
+		  	conn.query(sql,function (err, result) {
+		            if(err){
+		              failCallback(err);
+		              console.log('[SQL ERROR] - ',err.message);
 		              dbFactory.closeConnection(conn);
 		              return;
 		            }
@@ -260,11 +302,15 @@ function clubservice(){
 	this.getCLRequests = function(clubId, successCallback, failCallback){
 			var dbFactory = new DBFactory();
 			var conn = dbFactory.createConnection();
-		 	var  sql = "select * from MEMBERS left join CLRECORDS on MEMBERS.member_id = clr_id.member_id where MEMBERS.club_id = "+clubId;
+		 	var  sql = "select MEMBERS.member_id, MEMBERS.member_name, MEMBERS.club_id, CLRECORDS2.clr_id, CLRECORDS2.clr_status, CLRECORDS2.cl_level, CLRECORDS2.cl_type"+  
+						" from MEMBERS left join "+
+						"(select CLRECORDS.clr_id, CLRECORDS.clr_status, CLRECORDS.member_id, CLPROJECT.cl_id, CLPROJECT.cl_level, CLPROJECT.cl_type "+
+								"from CLRECORDS left join  CLPROJECT on CLRECORDS.cl_id = CLPROJECT.cl_id) as CLRECORDS2 "+
+						" on MEMBERS.member_id = CLRECORDS2.member_id where CLRECORDS2.clr_status = 0 and MEMBERS.club_id = "+clubId;
 		  	conn.query(sql,function (err, result) {
 		            if(err){
 		              failCallback(err);
-		              console.log('[SELECT ERROR] - ',err.message);
+		              console.log('[SQL ERROR] - ',err.message);
 		              dbFactory.closeConnection(conn);
 		              return;
 		            }
@@ -273,6 +319,43 @@ function clubservice(){
 		     		return result;
 		   });
 	}
+
+
+	this.approveClRequest = function(clrId, successCallback, failCallback){
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+
+			var  sql = "update CLRECORDS set clr_status = 1 where clr_id = "+clrId;
+		  	conn.query(sql,function (err, result) {
+		            if(err){
+		              failCallback(err);
+		              console.log('[SQL ERROR] - ',err.message);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
+		   });
+	}
+
+	this.delClRequest = function(clrId, successCallback, failCallback){
+			var dbFactory = new DBFactory();
+			var conn = dbFactory.createConnection();
+			var  sql = "delete from CLRECORDS where clr_id = "+clrId;
+		  	conn.query(sql,function (err, result) {
+		            if(err){
+		              failCallback(err);
+		              console.log('[SQL ERROR] - ',err.message);
+		              dbFactory.closeConnection(conn);
+		              return;
+		            }
+		            successCallback(result);
+		     		dbFactory.closeConnection(conn);
+		     		return result;
+		   });
+	}
+
 
 }
 

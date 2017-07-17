@@ -39,6 +39,54 @@ app.post('/clubs/:clubId/ccRequests', function (req, res) {
    });
 })
 
+app.post('/clubs/:clubId/ccRequests/:ccrId/approve', function (req, res) {
+   var passwd = req.body.passwd; 
+   var clubService = new ClubService();
+   clubService.checkPasswd(req.params.clubId,function(results){
+       var spass = results[0].sys_passwd;
+       if (passwd == spass){
+          clubService.approveCCRequest(req.params.ccrId,function(results){
+              res.json({status: "true"});
+          },function(errMsg){
+              // logs here....
+              res.json({status: "false"});
+          });
+       }else{
+          res.json({
+              status: "false",
+              errMgs: "no permission"
+          });
+       } 
+   },function(errMsg){
+       res.json({status: "false"});
+   });
+
+})
+
+app.post('/clubs/:clubId/ccRequests/:ccrId/decline', function (req, res) {
+   var passwd = req.body.passwd; 
+   var clubService = new ClubService();
+   clubService.checkPasswd(req.params.clubId,function(results){
+       var spass = results[0].sys_passwd;
+       if (passwd == spass){
+          clubService.delCCRequest(req.params.ccrId,function(results){
+              res.json({status: "true"});
+          },function(errMsg){
+              // logs here....
+              res.json({status: "false"});
+          });
+       }else{
+          res.json({
+              status: "false",
+              errMgs: "no permission"
+          });
+       } 
+   },function(errMsg){
+       res.json({status: "false"});
+   });
+})
+
+
 app.post('/clubs/:clubId/clRequests', function (req, res) {
    var passwd = req.body.passwd; 
    var clubService = new ClubService();
@@ -46,6 +94,54 @@ app.post('/clubs/:clubId/clRequests', function (req, res) {
        res.json({records: results});
    },function(errMsg){
        res.json({error: errMsg});
+   });
+})
+
+
+app.post('/clubs/:clubId/clRequests/:clrId/approve', function (req, res) {
+   var passwd = req.body.passwd; 
+   var clubService = new ClubService();
+   clubService.checkPasswd(req.params.clubId,function(results){
+       var spass = results[0].sys_passwd;
+       if (passwd == spass){
+          clubService.approveClRequest(req.params.clrId,function(results){
+              res.json({status: "true"});
+          },function(errMsg){
+              // logs here....
+              res.json({status: "false"});
+          });
+       }else{
+          res.json({
+              status: "false",
+              errMgs: "no permission"
+          });
+       } 
+   },function(errMsg){
+       res.json({status: "false"});
+   });
+
+})
+
+app.post('/clubs/:clubId/clRequests/:clrId/decline', function (req, res) {
+   var passwd = req.body.passwd; 
+   var clubService = new ClubService();
+   clubService.checkPasswd(req.params.clubId,function(results){
+       var spass = results[0].sys_passwd;
+       if (passwd == spass){
+          clubService.delClRequest(req.params.clrId,function(results){
+              res.json({status: "true"});
+          },function(errMsg){
+              // logs here....
+              res.json({status: "false"});
+          });
+       }else{
+          res.json({
+              status: "false",
+              errMgs: "no permission"
+          });
+       } 
+   },function(errMsg){
+       res.json({status: "false"});
    });
 })
 

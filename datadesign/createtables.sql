@@ -53,10 +53,6 @@ create table MEMBERS (
 
 );
 
-select * from MEMBERS left join 
-	(select CCRECORDS left join  CCPROJECT on CCRECORDS.ccr_id = CCPROJECT.ccr_id) as CCRECORDS2
-	on MEMBERS.member_id = CCRECORDS2.member_id where MEMBERS.club_id = 1;
-
 create table CCPROJECT (
 	cc_id int primary key,
 	cc_level int not null,
@@ -144,6 +140,19 @@ insert into CLPROJECT(cl_type,cl_level,cl_name,cc_role) values ( "CL", 1, "priac
 insert into CLPROJECT(cl_type,cl_level,cl_name,cc_role) values ( "CL", 1, "priactise listening", "ie");
 
 insert into CLRECORDS(complete_time,cl_id,member_id) value(now(), 1 ,1 );
+
+select MEMBERS.member_id, MEMBERS.member_name, MEMBERS.club_id, CCRECORDS2.ccr_id, CCRECORDS2.ccr_status, CCRECORDS2.cc_level, CCRECORDS2.cc_type  
+	from MEMBERS left join 
+	(select CCRECORDS.ccr_id, CCRECORDS.ccr_status, CCRECORDS.member_id, CCPROJECT.cc_id, CCPROJECT.cc_level, CCPROJECT.cc_type 
+			from CCRECORDS left join  CCPROJECT on CCRECORDS.cc_id = CCPROJECT.cc_id) as CCRECORDS2
+	on MEMBERS.member_id = CCRECORDS2.member_id where MEMBERS.club_id = 1;
+
+select MEMBERS.member_id, MEMBERS.member_name, MEMBERS.club_id, CLRECORDS2.cl_id, CLRECORDS2.clr_status, CLRECORDS2.cl_level, CLRECORDS2.cl_type  
+	from MEMBERS left join 
+	(select CLRECORDS.clr_id, CLRECORDS.clr_status, CLRECORDS.member_id, CLPROJECT.cl_id, CLPROJECT.cl_level, CLPROJECT.cl_type 
+			from CLRECORDS left join  CLPROJECT on CLRECORDS.cl_id = CLPROJECT.cl_id) as CLRECORDS2
+	on MEMBERS.member_id = CLRECORDS2.member_id where MEMBERS.club_id = 1;
+
 
 show tables;
 

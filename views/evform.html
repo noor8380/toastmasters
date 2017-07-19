@@ -147,14 +147,12 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
 
     $scope.backToHome = function(){
         var url = "/club.html?clubId="+$scope.club.club_id;
-        $location.url(url);
-        $window.location.reload();
+       window.location.href = url;
     }
 
     $scope.goToHistory = function(){
         var url = "/evlist.html?clubId="+$scope.club.club_id;
-        $location.url(url);
-        $window.location.reload();
+       window.location.href = url;
     }
 
     $(document.body).on("pull-to-refresh", function() {

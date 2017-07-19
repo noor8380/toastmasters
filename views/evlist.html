@@ -62,8 +62,8 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
     }
 
     $scope.showDetail = function(meeting_Id){
-        $location.url("evform.html?clubId="+$scope.club.club_id+"&meetingId="+meeting_Id);
-        $window.location.reload();
+        var url = "evform.html?clubId="+$scope.club.club_id+"&meetingId="+meeting_Id;
+        window.location.href = url;
     }
 
 });

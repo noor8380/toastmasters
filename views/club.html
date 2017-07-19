@@ -47,8 +47,7 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
 
     $scope.jumpTo = function (page){
         var url = "/"+page+"?clubId="+$scope.club.club_id;
-        $location.url(url);
-        $window.location.reload();
+        window.location.href = url;
     }
 });
 

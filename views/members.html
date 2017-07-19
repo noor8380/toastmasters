@@ -66,8 +66,8 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
     }
 
     $scope.showMember = function(memberId){
-        $location.url("member.html?clubId="+$scope.club.club_id+"&memberId="+memberId);
-        $window.location.reload();
+        var url = "member.html?clubId="+$scope.club.club_id+"&memberId="+memberId;
+        window.location.href = url;
     }
 
     $scope.backToHome = function(){

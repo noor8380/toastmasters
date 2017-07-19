@@ -125,7 +125,7 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
             </div>
             <div class="weui-form-preview__bd">
               <div class="weui-form-preview__item" ng-repeat="css in CCStatus | orderBy:'cc_id' " style="padding:1px;">
-                <label class="weui-form-preview__label">{{css.cc_type}}{{css.cc_level}}: {{css.cc_name}}</label>
+                <label class="weui-form-preview__label" style="text-align: left; text-align-last: left; max-width: 70%;">{{css.cc_type}}{{css.cc_level}}: {{css.cc_name}}</label>
                 <span class="weui-form-preview__value">
                     <i ng-if="css.ccr_status != null"  ng-class="{'weui-icon-waiting': (css.ccr_status == 0),'weui-icon-success':(css.ccr_status == 1) }"></i>
                     <div class="button_sp_area">

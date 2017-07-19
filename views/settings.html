@@ -283,7 +283,11 @@ app.controller('myCtrl', function($scope,$http,$location,$window ) {
 <body ng-app="myApp" ng-controller="myCtrl">
 
      <div class="weui-panel weui-panel_access">
-      <div class="weui-panel__hd">Toastmasters Club Management</div>
+      <div class="weui-panel__hd">
+          <a href="javascript:" ng-click="backToHome()">
+           <i class="icono-caretLeftCircle"></i>
+          </a>
+          Toastmasters Club Management</div>
       <div class="weui-panel__bd"> 
 
           <div class="weui-grids">

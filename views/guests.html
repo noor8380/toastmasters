@@ -68,8 +68,7 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
 
     $scope.backToHome = function(){
         var url = "/club.html?clubId="+$scope.club.club_id;
-        $location.url(url);
-        $window.location.reload();
+        window.location.href = url;
     }
 
 });

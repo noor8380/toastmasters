@@ -72,8 +72,7 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
 
     $scope.backToHome = function(){
         var url = "/club.html?clubId="+$scope.club.club_id;
-        $location.url(url);
-        $window.location.reload();
+        window.location.href = url;
     }
     
 
@@ -116,7 +115,7 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
             <div class="weui-cell">
                   <div class="weui-cell__hd" style="position: relative;margin-right: 10px;">
                       <img ng-src="{{member.member_pic}}" style="width: 50px;display: block">
-                      <span class="weui-badge" style="position: absolute;top: -.4em;right: -.4em;">CC,CL</span>
+                      <!--span class="weui-badge" style="position: absolute;top: -.4em;right: -.4em;">CC,CL</span-->
                   </div>
                   <div class="weui-cell__bd">
                       <p>{{member.member_name}}</p>

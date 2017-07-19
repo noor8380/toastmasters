@@ -144,7 +144,7 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
             </div>
             <div class="weui-form-preview__bd">
               <div class="weui-form-preview__item"  ng-repeat="cls in CLStatus | orderBy:'cl_id'" style="padding:1px;">
-                <label class="weui-form-preview__label">{{cls.cl_type}}{{cls.cl_level}}:{{cls.cl_name}}[{{cls.cc_role}}]</label>
+                <label class="weui-form-preview__label" style="text-align: left; text-align-last: left; max-width: 70%;">{{cls.cl_type}}{{cls.cl_level}}:{{cls.cl_name}}[{{cls.cc_role}}]</label>
                 <span class="weui-form-preview__value">
                     <i ng-if="cls.clr_status != null" ng-class="{'weui-icon-waiting': (cls.clr_status == 0),'weui-icon-success':(cls.clr_status == 1) }"></i>
                     <a ng-if="cls.clr_status == null" 

@@ -119,7 +119,7 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
         if(! $scope.meeting.meeting_id){
            return false;
         }
-        var url = 'clubs/'+$scope.club.club_id+'/meetings/'+$scope.meeting.meeting_id+'/addreport';
+        var url = '/clubs/'+$scope.club.club_id+'/meetings/'+$scope.meeting.meeting_id+'/addreport';
         var parameter = JSON.stringify(
            {
               evaluator: $scope.rq.evaluator, 

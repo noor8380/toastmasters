@@ -1,0 +1,137 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TOASTMASTERS CLUB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/toastmasters/" /> 
+    <link rel="stylesheet" href="resource/app.css">
+    <link rel="stylesheet" href="css/icono.min.css">
+    <link rel="stylesheet" href="resource/weui.min.css">
+    <link rel="stylesheet" href="resource/jquery-weui.min.css">
+    <script src="resource/angular.min.js"></script>
+
+    <script type="text/javascript">
+
+var app = angular.module('myApp', []);
+
+app.config(['$locationProvider', function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    }]);
+
+app.controller('myCtrl', function($scope,$http,$location,$window) {
+    $scope.club = {
+        clubName:"",
+        clubId:0
+    };
+    var parameters = $location.search();
+    if(parameters.clubId){
+        $http({
+          method: 'GET',
+          url: '/clubs/'+parameters.clubId
+        }).then(function successCallback(response) {
+              var club  = response.data.club;
+              if (club){
+                $scope.club = club;
+                $.toptip('Welcome to '+$scope.club.clubName+' Toastmasters club', 'success');
+
+                $http({
+                      method: 'GET',
+                      url: '/clubs/'+parameters.clubId+"/members"
+                }).then(function successCallback(response) {
+                      $scope.members  = response.data.members;
+                      if ($scope.members){
+                      }else{
+                          $.toptip('NO members found', 'error');
+                      }
+                 }, function errorCallback(response) {
+                      $.toptip(response.data.error, 'error');
+                 }); 
+
+              }else{
+                $.toptip('NO members FOUND', 'error');
+              }
+          }, function errorCallback(response) {
+              $.toptip(response.data.error, 'error');
+        }); 
+
+        
+    }else{
+        $.toptip('NO CLUB found', 'error');
+        // redirect to toastmaster club list laster
+    }
+
+    $scope.clearFilter = function(){
+        console.log("clear the filter...");
+        $scope.memberName = undefined;
+    }
+
+    $scope.showMember = function(memberId){
+        var url = "/toastmasters/member.html?clubId="+$scope.club.club_id+"&memberId="+memberId;
+        window.location.href = url;
+    }
+
+    $scope.backToHome = function(){
+        var url = "/toastmasters/club.html?clubId="+$scope.club.club_id;
+        window.location.href = url;
+    }
+    
+
+
+});
+
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+    <div class="weui-panel weui-panel_access">
+      <div class="weui-panel weui-panel_access">
+      <div class="weui-panel__hd">
+         <div class="weui-cell__bd">
+               <a href="javascript:" ng-click="backToHome()">
+                 <i class="icono-caretLeftCircle"></i>
+              </a>{{club.club_name}} Club Members
+          </div>
+          
+      </div>
+      <div class="weui-panel__bd">
+          <div class="weui-search-bar" id="searchBar">
+            <form class="weui-search-bar__form">
+              <div class="weui-search-bar__box" style="height: inherit">
+                <i class="weui-icon-search"></i>
+                <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" ng-model="memberName" required="">
+                <a href="javascript:" ng-click="clearFilter()" class="weui-icon-clear" id="searchClear"></a>
+              </div>
+              <label class="weui-search-bar__label" id="searchText">
+                <i class="weui-icon-search"></i>
+                <span>搜索</span>
+              </label>
+            </form>
+            <a href="javascript:" ng-click="clearFilter()" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+          </div>
+          
+          <a href="javascript:void(0);" 
+             ng-repeat="member in members | filter: {'member_name': memberName }" 
+             ng-click="showMember(member.member_id)"
+             class="weui-media-box weui-media-box_appmsg">
+            <div class="weui-cell">
+                  <div class="weui-cell__hd" style="position: relative;margin-right: 10px;">
+                      <img ng-src="{{member.member_pic}}" style="width: 50px;display: block">
+                      <!--span class="weui-badge" style="position: absolute;top: -.4em;right: -.4em;">CC,CL</span-->
+                  </div>
+                  <div class="weui-cell__bd">
+                      <p>{{member.member_name}}</p>
+                      <p style="font-size: 13px;color: #888888;">{{member.member_intro}}</p>
+                  </div>
+              </div>
+          </a>
+         
+      </div>
+    </div>
+
+    <div ng-include="'foot.html'"></div>  
+    <script src="resource/jquery.min.js"></script>
+    <script src="resource/jquery-weui.min.js"></script>
+    <script src="resource/swiper.min.js"></script>
+
+    
+</body>
+</html>

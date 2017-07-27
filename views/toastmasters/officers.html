@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <title>TOASTMASTERS CLUB</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <base href="/" /> 
+    <base href="/toastmasters/" /> 
     <link rel="stylesheet" href="resource/app.css">
     <link rel="stylesheet" href="css/icono.min.css">
     <link rel="stylesheet" href="resource/weui.min.css">
@@ -37,19 +37,19 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
 
                 $http({
                       method: 'GET',
-                      url: '/clubs/'+parameters.clubId+"/guests"
+                      url: '/clubs/'+parameters.clubId+"/officers"
                 }).then(function successCallback(response) {
-                      $scope.guests  = response.data.guests;
-                      if ($scope.guests){
+                      $scope.officers  = response.data.officers;
+                      if ($scope.officers){
                       }else{
-                          $.toptip('NO guests found', 'error');
+                          $.toptip('NO officers found', 'error');
                       }
                  }, function errorCallback(response) {
                       $.toptip(response.data.error, 'error');
                  }); 
 
               }else{
-                $.toptip('NO guests FOUND', 'error');
+                $.toptip('NO CLUB FOUND', 'error');
               }
           }, function errorCallback(response) {
               $.toptip(response.data.error, 'error');
@@ -57,62 +57,59 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
 
         
     }else{
-        $.toptip('NO club found', 'error');
+        $.toptip('NO officers found', 'error');
         // redirect to toastmaster club list laster
     }
 
-    $scope.clearFilter = function(){
-        console.log("clear the filter...");
-        $scope.guestName = undefined;
-    }
-
     $scope.backToHome = function(){
-        var url = "/club.html?clubId="+$scope.club.club_id;
+        var url = "/toastmasters/club.html?clubId="+$scope.club.club_id;
         window.location.href = url;
     }
-
 });
 
     </script>
 </head>
 <body ng-app="myApp" ng-controller="myCtrl">
     <div class="weui-panel weui-panel_access">
-       <div class="weui-panel__hd">
+      <div class="weui-panel__hd">
          <div class="weui-cell__bd">
                <a href="javascript:" ng-click="backToHome()">
                  <i class="icono-caretLeftCircle"></i>
-              </a>{{club.club_name}} Club Guests
+              </a>{{club.club_name}} Club Officers
           </div>
           
       </div>
       <div class="weui-panel__bd">
-          
-          <div class="weui-search-bar" id="searchBar">
-            <form class="weui-search-bar__form">
-              <div class="weui-search-bar__box" style="height: inherit">
-                <i class="weui-icon-search"></i>
-                <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="" ng-model="guestName">
-                <a href="javascript:" ng-click="clearFilter()" class="weui-icon-clear" id="searchClear"></a>
+          <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000">
+             <div class="swiper-wrapper" style="height:auto">
+               <div class="swiper-slide" style="height:auto"><img ng-src="{{club.club_officer_pic}}" alt=""></div>
+             </div>
+          </div>  
+          <div class="weui-panel" ng-repeat="officer in officers">
+            <div class="weui-panel__bd">
+              <div class="weui-media-box weui-media-box_text">
+                <h4 class="weui-media-box__title">{{officer.officer_role}}</h4>
+                <div class="weui-media-box__desc">
+                      <div class="weui-panel weui-panel_access">
+                        <div class="weui-panel__bd">
+                          <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                            <div class="weui-media-box__hd">
+                              <img class="weui-media-box__thumb" ng-src="{{officer.officer_offpic}}">
+                            </div>
+                            <div class="weui-media-box__bd">
+                              <h4 class="weui-media-box__title">{{officer.officer_name}}</h4>
+                              <p class="weui-media-box__desc">{{officer.officer_intro}}</p>
+                            </div>
+                          </a>
+                        </div>
+                      </div>
+                </div>
+                <ul class="weui-media-box__info">
+                  <li class="weui-media-box__info__meta">{{officer.role_intro}}</li>
+                </ul>
               </div>
-              <label class="weui-search-bar__label" id="searchText">
-                <i class="weui-icon-search"></i>
-                <span>搜索</span>
-              </label>
-            </form>
-            <a ng-href="javascript:" ng-click="clearFilter()"  class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+            </div>
           </div>
-          
-          <a href="javascript:void(0);" ng-repeat="guest in guests | filter: {'guest_name': guestName }" class="weui-media-box weui-media-box_appmsg">
-            <div class="weui-cell">
-                  <div class="weui-cell__hd" style="position: relative;margin-right: 10px;">
-                      <img ng-src="{{guest.guest_pic}}" style="width: 50px;display: block">
-                  </div>
-                  <div class="weui-cell__bd">
-                      <p>{{guest.guest_name}}</p>
-                      <p style="font-size: 13px;color: #888888;">{{guest.guest_intro}}</p>
-                  </div>
-              </div>
-          </a>
 
       </div>
     </div>

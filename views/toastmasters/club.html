@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <title>TOASTMASTERS CLUB</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <base href="/" /> 
+    <base href="/toastmasters/" /> 
     <link rel="stylesheet" href="resource/app.css">
     <link rel="stylesheet" href="css/icono.min.css">
     <link rel="stylesheet" href="resource/weui.min.css">
@@ -46,7 +46,7 @@ app.controller('myCtrl', function($scope,$http,$location,$window) {
     }
 
     $scope.jumpTo = function (page){
-        var url = "/"+page+"?clubId="+$scope.club.club_id;
+        var url = "/toastmasters/"+page+"?clubId="+$scope.club.club_id;
         window.location.href = url;
     }
 });

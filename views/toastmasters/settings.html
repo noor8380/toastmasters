@@ -340,7 +340,7 @@ app.controller('myCtrl', function($scope,$http,$location,$window ) {
                  
                   <div class="weui-cell" ng-repeat="request in CLRequests">
                     <div class="weui-cell__bd">
-                      <p>{{request.member_name}} applying {{request.cl_type}}{{request.cl_level}}</p>
+                      <p>{{request.member_name}} applying {{request.cl_type}}{{request.cl_level}} [{{request.cc_role}}]</p>
                     </div>
                     <div class="weui-cell__ft">
                           <div class="button_sp_area">

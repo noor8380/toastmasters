@@ -319,9 +319,9 @@ function clubservice(){
 	this.getCLRequests = function(clubId, successCallback, failCallback){
 			var dbFactory = new DBFactory();
 			var conn = dbFactory.createConnection();
-		 	var  sql = "select MEMBERS.member_id, MEMBERS.member_name, MEMBERS.club_id, CLRECORDS2.clr_id, CLRECORDS2.clr_status, CLRECORDS2.cl_level, CLRECORDS2.cl_type"+  
+		 	var  sql = "select MEMBERS.member_id, MEMBERS.member_name, MEMBERS.club_id, CLRECORDS2.clr_id, CLRECORDS2.clr_status, CLRECORDS2.cl_level, CLRECORDS2.cl_type, CLRECORDS2.cc_role"+  
 						" from MEMBERS left join "+
-						"(select CLRECORDS.clr_id, CLRECORDS.clr_status, CLRECORDS.member_id, CLPROJECT.cl_id, CLPROJECT.cl_level, CLPROJECT.cl_type "+
+						"(select CLRECORDS.clr_id, CLRECORDS.clr_status, CLRECORDS.member_id, CLPROJECT.cl_id, CLPROJECT.cl_level, CLPROJECT.cl_type,  CLPROJECT.cc_role "+
 								"from CLRECORDS left join  CLPROJECT on CLRECORDS.cl_id = CLPROJECT.cl_id) as CLRECORDS2 "+
 						" on MEMBERS.member_id = CLRECORDS2.member_id where CLRECORDS2.clr_status = 0 and MEMBERS.club_id = "+clubId;
 		  	conn.query(sql,function (err, result) {
